@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap');
+
+:root {
+    --primary-color: rgb(78, 150, 78);
+    --secondary-color: rgb(32, 95, 32);
+    --light-color: #f4f4f4;
+    --dark-color: rgb(16, 65, 16);
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+h1, h2 {
+    font-weight: 300;
+    line-height: 1.2;
+    margin: 10px 0;
+}
+
+p {
+    margin: 10px 0;
+}
+
+img {
+    width: 100%;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color);
+    color: #fff;
+    height: 70px;
+}
+
+.navbar ul {
+    display: flex;
+}
+
+.navbar a {
+    color: #fff;
+    padding: 10px;
+    margin: 0 5px;
+}
+
+.navbar a:hover {
+    border-bottom: 2px #fff solid;
+}
+
+.navbar .flex {
+    justify-content: space-between;
+}
+
+/* Alertbar */
+.alertbar {
+    background-color: var(--primary-color);
+}
+
+ /* The alert message box */
+ .alert-error {
+    padding: 20px;
+    color: white;
+    background-color: #f44336; /* Red */
+    margin: 0px 20px;
+    border-radius: 10px;
+  }
+
+  .alert-success {
+    padding: 20px;
+    color: white;
+    background-color: #0e4b06; /* Green */
+    margin: 0px 20px;
+    border-radius: 10px;
+  }
+  
+  
+  /* The close button */
+  .closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  /* When moving the mouse over the close button */
+  .closebtn:hover {
+    color: black;
+  } 
+
+/* Footer */
+.footer .social a {
+    margin: 0 10px;
+}

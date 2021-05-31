@@ -1,0 +1,6 @@
+.vscode
+website/__pycache__
+website/users.db
+website/config.ini
+tasks/task_config.ini
+Logs

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/utilities.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    {% block css %} {% endblock %}
+
+    <!-- Title displayed in tab -->
+    <title>{% block title %}Cauldron{% endblock %}</title>
+  </head>
+
+  <body {% block options %} {% endblock %}>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="container flex">
+        <div class="flex">
+          <img
+            src="{{ url_for('static', filename='images/logos/cauldron.png') }}"
+            alt=""
+          />
+          <h1 class="logo">Cauldron</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="/clustering">Clustering</a></li>
+            <li><a href="/logout">Logout</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div class="alertbar">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            {% if category == 'error' %}
+              <div class="alert-error">
+                <span
+                  class="closebtn"
+                  onclick="this.parentElement.style.display='none';"
+                  >&times;</span
+                >
+                {{ message }}
+              </div>
+            {% else %}
+              <div class="alert-success">
+                <span
+                  class="closebtn"
+                  onclick="this.parentElement.style.display='none';"
+                  >&times;</span
+                >
+                {{ message }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="childcontent">{% block content %} {% endblock %}</div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark py-5">
+      <div class="container grid grid-3">
+        <div>
+          <h1>Cauldron</h1>
+          <p>Copyright &copy; 2021</p>
+        </div>
+        <nav class="text-center">
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="/clustering">Clustering</a></li>
+            <li><a href="/logout">Logout</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        <div class="social text-right">
+          <a href="https://github.com/funderos/Cauldron"
+            ><i class="fab fa-github fa-2x"></i
+          ></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {% block scripts%} {% endblock %}
+  </body>
+</html>

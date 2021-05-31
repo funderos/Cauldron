@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Cauldron | Clustering{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/clustering.css') }}" />{% endblock %}
+{% block options %}onload="setHeight()" onresize="setHeight()"{% endblock %}
+
+{% block content %}
+<section class="visualizations">
+  <!-- Tab links -->
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'clustering')">Cluster Data</button>
+    <button class="tablinks" onclick="openTab(event, 'playerDetails')">Player Details</button>
+    <button class="tablinks" onclick="openTab(event, 'statistics')">Overall Statistics</button>
+  </div>
+
+      <!-- Tab content -->
+      <div id="clustering" class="tabcontent">
+      <div class="grid">
+        <div class="clustering-details">
+          <form id="clustering-features">
+            <label for="level">Summoner Level</label>
+            <input type="checkbox" checked="checked" id="level"><p>
+            <label for="degree">Ego Network Degree</label>
+            <input type="checkbox" checked="checked" id="degree"><p>
+            <label for="density">Ego Network Density</label>
+            <input type="checkbox" checked="checked" id="density"><p>
+            <label for="componentRatio">Ego Network Component Ratio</label>
+            <input type="checkbox" checked="checked" id="componentRatio"><p>
+            <label for="age">Age</label>
+            <input type="checkbox" checked="checked" id="age"><p>
+            <!-- label for="gender">Gender</label>
+            <input type="checkbox" checked="checked" id="gender"><p-->
+            <label for="panas">PANAS</label>
+            <input type="checkbox" checked="checked" id="panas"><p>
+            <label for="ach">ACH GOAL</label>
+            <input type="checkbox" checked="checked" id="ach"><p>
+            <label for="amo">AMO</label>
+            <input type="checkbox" checked="checked" id="amo"><p>
+            <label for="ext">EXT</label>
+            <input type="checkbox" checked="checked" id="ext"><p>
+            <label for="ide">IDE</label>
+            <input type="checkbox" checked="checked" id="ide"><p>
+            <label for="imo">IMO</label>
+            <input type="checkbox" checked="checked" id="imo"><p>
+            <label for="inj">INJ</label>
+            <input type="checkbox" checked="checked" id="inj"><p>
+            <label for="int">INT</label>
+            <input type="checkbox" checked="checked" id="int"><p>
+            <label for="passion">PASSION</label>
+            <input type="checkbox" checked="checked" id="passion"><p>
+            <label for="pens">PENS</label>
+            <input type="checkbox" checked="checked" id="pens"><p>
+            <label for="vitality">Vitality</label>
+            <input type="checkbox" checked="checked" id="vitality"><p>
+            <label for="preprocessing">Preprocessing:</label>
+            <select id="preprocessing">
+              <option value="standard">Standard Scaler</option>
+              <option value="minmax">MinMax Scaler</option>
+              <option value="none">None</option>
+            </select><p>
+            <input type="button" value="Elbow Plot" onclick="elbowPlot(true)"><p>
+            <label for="kmeans">K:</label>
+            <input type="number" id="kmeans" name="kmeans" min="1">
+            <input type="button" value="K-Means Clustering" onclick="scatterPlot(true)"><p>
+          </form>
+        </div>
+        <div class="clustering-results" id="clustering-results">
+        </div>
+        </div>
+      </div>
+
+      <div id="playerDetails" class="tabcontent">
+        <div id="network-input" class="flex">
+          <form>
+            <label for="summonerid">Identifier:</label>
+            <select id="summonerid">
+            {% for ego, length in ids %}
+            {% if length < 30 %}
+              <option value="{{ego}}">{{ego}} ({{length}})</option>
+            {% endif %}
+            {% endfor %}
+            </select>
+            <input type="button" value="1 Level" onclick="drawNetwork('egonet', true)">
+            <input type="button" value="2 Levels" onclick="drawNetwork('extended', true)">
+            <input type="button" value="Components" onclick="drawNetwork('components', true)">
+          </form>
+        </div>
+        <div id="network-output" class="flex"></div>
+        <div id="network-content" class="tabcontent-2">
+            <p>Click on the preferred level to start demo.</p>
+        </div>
+      </div>
+
+      <div id="statistics" class="tabcontent stats">
+        <h3>Statistics</h3>
+        <input type="button" value="Show statistics" onclick="loadStatistics()"><p>
+        {% for label in statfields %}
+            <div id="{{label}}" style="width:1000px;height:250px"></div>
+        {% endfor %}
+      </div>
+</section>
+
+<!-- section class="visualizations">
+  <div class="container flex">
+    <div class="tab">
+      <button class="tablinks" onclick="openTab(event, 'playerDetails')">
+        Player Details
+      </button>
+      <button class="tablinks" onclick="openTab(event, 'clustering')">
+        Cluster Data
+      </button>
+      <button class="tablinks">Placeholder</button>
+      <button class="tablinks">Placeholder</button>
+      <button class="tablinks">Placeholder</button>
+      <button class="tablinks">Placeholder</button>
+      <button class="tablinks">Placeholder</button>
+      <button class="tablinks">Placeholder</button>
+      <button class="tablinks">Placeholder</button>
+    </div>
+
+    <div id="playerDetails">
+      <div id="network-input" class="flex">
+        <form>
+          <label for="summonerid">Identifier:</label>
+          <select id="summonerid">
+            {% for ego, length in ids %}
+            <option value="{{ego}}">{{ego}} ({{length}})</option>
+            {% endfor %}
+          </select>
+          <input type="button" value="Go!" onclick="drawDemo(true)" />
+        </form>
+      </div>
+
+      <div id="network-output" class="flex"></div>
+      <div id="network-content" class="tabcontent">
+        <p>Click on "Go!"to start demo.</p>
+      </div>
+    </div>
+  </div>
+</section -->
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='networkUtilities.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='networkClustering.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='networkVisualization.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='networkPlots.js') }}"></script>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
