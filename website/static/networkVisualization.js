@@ -3,8 +3,9 @@ var edges = null;
 var network = null;
 
 function drawNetwork(content, firstTry) {
-  nodes = []
-  edges = []
+  openModal();
+  nodes = [];
+  edges = [];
   var chooser = document.getElementById('summonerid');
   var key = chooser.options[chooser.selectedIndex].value;
   var infoDiv = document.getElementById('network-output')

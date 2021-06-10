@@ -1,3 +1,8 @@
 flask
-Flask-SQLAlchemy
+flask_sqlalchemy
 flask-login
+pandas
+sklearn
+seaborn
+matplotlib
+numpy

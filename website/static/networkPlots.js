@@ -10,7 +10,12 @@ function loadStatistics() {
         pointpos: 0,
         name: key,
       };
-      Plotly.newPlot("stat" + key.replaceAll(" ", ""), [trace]);
+
+      var layout = {
+        showlegend: false
+      };
+
+      Plotly.newPlot("stat" + key.replaceAll(" ", ""), [trace], layout, {displayModeBar: false});
     }
   });
 }

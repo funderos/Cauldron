@@ -1,5 +1,6 @@
 statistics = [];
 loaded = false;
+modal = document.getElementById("myModal");
 
 function getStatArray() {
   return new Promise((resolve, reject) => {
@@ -47,5 +48,23 @@ function openTab(evt, tabId) {
 
 function setHeight() {
   var container = document.getElementById("network-content");
-  container.style.height = container.offsetWidth * 0.75 + "px";
+  container.style.height = "500px";
 }
+
+// When the user clicks on the button, open the modal
+function openModal() {
+  modal.style.display = "block";
+  document.getElementById('network-content').innerHTML = "<div class='loader'></div>";
+}
+
+// When the user clicks on <span> (x), close the modal
+function closeModal() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+} 

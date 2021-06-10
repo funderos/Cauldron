@@ -12,6 +12,19 @@
     <button class="tablinks" onclick="openTab(event, 'statistics')">Overall Statistics</button>
   </div>
 
+<!-- Network Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="network-content" class="tabcontent-2">
+    </div>
+  </div>
+
+</div>
+
+
       <!-- Tab content -->
       <div id="clustering" class="tabcontent">
       <div class="grid">
@@ -65,7 +78,7 @@
         </div>
         <div class="clustering-results" id="clustering-results">
         </div>
-        </div>
+      </div>
       </div>
 
       <div id="playerDetails" class="tabcontent">
@@ -85,7 +98,6 @@
           </form>
         </div>
         <div id="network-output" class="flex"></div>
-        <div id="network-content" class="tabcontent-2">
             <p>Click on the preferred level to start demo.</p>
         </div>
       </div>

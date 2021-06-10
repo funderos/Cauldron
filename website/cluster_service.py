@@ -18,7 +18,7 @@ config = configparser.ConfigParser()
 config.read(os.path.join(here, 'config.ini'))
 
 ROOT_DIRPATH = config['DATA']['ROOT']
-EGO_DIRPATH = ROOT_DIRPATH + config['DATA']['EGOS']
+#EGO_DIRPATH = ROOT_DIRPATH + config['DATA']['EGOS']
 DICT_FILEPATH = ROOT_DIRPATH + config['DATA']['DICT']
 RESULT_FILEPATH = ROOT_DIRPATH + config['DATA']['RESULTS']
 RESULT_FILEPATH_FILE = ROOT_DIRPATH + config['DATA']['RESULTFILE']
