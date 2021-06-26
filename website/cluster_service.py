@@ -18,10 +18,18 @@ config = configparser.ConfigParser()
 config.read(os.path.join(here, 'config.ini'))
 
 ROOT_DIRPATH = config['DATA']['ROOT']
-#EGO_DIRPATH = ROOT_DIRPATH + config['DATA']['EGOS']
 DICT_FILEPATH = ROOT_DIRPATH + config['DATA']['DICT']
 RESULT_FILEPATH = ROOT_DIRPATH + config['DATA']['RESULTS']
 RESULT_FILEPATH_FILE = ROOT_DIRPATH + config['DATA']['RESULTFILE']
+
+statCats = configparser.ConfigParser()
+statCats.optionxform = str
+statCats.read(os.path.join(here, 'stats.ini'))
+categorizedStatFields = {}
+for category in statCats:
+    categorizedStatFields[category] = {}
+    for item in statCats[category]:
+        categorizedStatFields[category][item] = statCats[category][item]
 
 with open(DICT_FILEPATH, 'rb') as iddict:
     ids = pickle.load(iddict)
@@ -33,17 +41,21 @@ with open(RESULT_FILEPATH_FILE, 'rb') as f:
 with open(ROOT_DIRPATH + "egomatchnumbers.pickle", 'rb') as f:
     matchnumbers = pickle.load(f)
 
-
 def get_ego_ids():
     return matchnumbers
 
 
 def get_stat_fields(prefix=''):
-    statFieldsRenamed = []
-    for field in statFields:
-        statFieldsRenamed.append(prefix + field.replace(' ', ''))
+    statFieldsRenamed = list(prefix + key.replace(' ', '') for key in statFields)
+    #for field in statFields:
+    #    statFieldsRenamed.append(prefix + field.replace(' ', ''))
     return statFieldsRenamed
 
+def get_categorized_stat_fields(prefix=''):
+    statFieldsRenamed = {}
+    for category in categorizedStatFields:
+        statFieldsRenamed[category] = {prefix + categorizedStatFields[category][key].replace(' ', '') : key for key in categorizedStatFields[category]}
+    return statFieldsRenamed
 
 def get_statistics():
     statsRefactored = dict()
@@ -94,6 +106,7 @@ def prepare_pca(n_components, data, kmeans_labels):
     df_matrix = DataFrame(matrix)
     df_matrix.rename({i:names[i] for i in range(n_components)}, axis=1, inplace=True)
     df_matrix['labels'] = kmeans_labels
+    df_matrix['ids'] = list(stat['id'] for stat in statistics)
     
     return df_matrix
 
@@ -108,5 +121,11 @@ def get_clustering(args):
     sio = io.BytesIO()
     plt.savefig(sio, format='svg')
     svg = sio.getvalue()
-    return svg
+    #pca_df = pca_df.set_index('labels')
+    #d = (pca_df.groupby('Subject_id').apply(lambda x: dict(zip(x['Subject'],x['Score'])))
+    #   .to_dict())
+    #pca_dict = {}
+    #for label in df['labels'].unique():
+    #    pca_dict[label] = [{df['value1'][j]: df['value2'][j]} for j in df[df['name']==i].index]
+    return svg #pca_df.to_dict('index')
     # return [cols_of_interest] + km.cluster_centers_.tolist()

@@ -2,6 +2,21 @@ statistics = [];
 loaded = false;
 modal = document.getElementById("myModal");
 
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("collapsible-active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+}
+
 function getStatArray() {
   return new Promise((resolve, reject) => {
     if (statistics.length) {
@@ -24,7 +39,23 @@ function getStatArray() {
   });
 }
 
+function init() {
+  document.getElementById("landingtab").style.display = "block";
+  var chooser = document.getElementById('summonerid');
+  chooser.options[chooser.selectedIndex].value;
+}
+
 function openTab(evt, tabId) {
+  evt.currentTarget.className += " active";
+  showTabContent(tabId);
+}
+
+function openTabManually(linkId, tabId) {
+  document.getElementById(linkId).className += " active";
+  showTabContent(tabId);
+}
+
+function showTabContent(tabId) {
   // Declare all variables
   var i, tabcontent, tablinks;
 
@@ -42,24 +73,17 @@ function openTab(evt, tabId) {
 
   // Show the current tab, and add an "active" class to the link that opened the tab
   document.getElementById(tabId).style.display = "block";
-  evt.currentTarget.className += " active";
-  setHeight();
-}
-
-function setHeight() {
-  var container = document.getElementById("network-content");
-  container.style.height = "500px";
 }
 
 // When the user clicks on the button, open the modal
 function openModal() {
-  modal.style.display = "block";
+  modal.classList.add("modal-open");
   document.getElementById('network-content').innerHTML = "<div class='loader'></div>";
 }
 
 // When the user clicks on <span> (x), close the modal
 function closeModal() {
-  modal.style.display = "none";
+  modal.classList.remove("modal-open");
 }
 
 // When the user clicks anywhere outside of the modal, close it

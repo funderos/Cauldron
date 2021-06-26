@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Cauldron | Clustering{% endblock %}
 {% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/clustering.css') }}" />{% endblock %}
-{% block options %}onload="setHeight()" onresize="setHeight()"{% endblock %}
+{% block options %}onload="init()"{% endblock %}
 
 {% block content %}
 <section class="visualizations">
   <!-- Tab links -->
   <div class="tab">
-    <button class="tablinks" onclick="openTab(event, 'clustering')">Cluster Data</button>
-    <button class="tablinks" onclick="openTab(event, 'playerDetails')">Player Details</button>
-    <button class="tablinks" onclick="openTab(event, 'statistics')">Overall Statistics</button>
+    <button id="linkClustering" class="tablinks" onclick="openTab(event, 'clustering')">Cluster Data</button>
+    <button id="linkPlayer" class="tablinks" onclick="openTab(event, 'playerDetails')">Player Details</button>
+    <button id="linkStats" class="tablinks" onclick="openTab(event, 'statistics')">Overall Statistics</button>
   </div>
 
 <!-- Network Modal -->
@@ -24,24 +24,26 @@
 
 </div>
 
-
+      <div id="landingtab" class="tabcontent">
+      Please click on a tab.
+      </div>
       <!-- Tab content -->
       <div id="clustering" class="tabcontent">
       <div class="grid">
         <div class="clustering-details">
           <form id="clustering-features">
-            <label for="level">Summoner Level</label>
-            <input type="checkbox" checked="checked" id="level"><p>
-            <label for="degree">Ego Network Degree</label>
-            <input type="checkbox" checked="checked" id="degree"><p>
+            <label class="checkbox">
+              <input type="checkbox" checked="checked">
+              Summoner Level
+            </label>
+            <input type="checkbox" checked="checked" id="degree">
+            <label for="degree">Ego Network Degree</label><p>
             <label for="density">Ego Network Density</label>
             <input type="checkbox" checked="checked" id="density"><p>
             <label for="componentRatio">Ego Network Component Ratio</label>
             <input type="checkbox" checked="checked" id="componentRatio"><p>
             <label for="age">Age</label>
             <input type="checkbox" checked="checked" id="age"><p>
-            <!-- label for="gender">Gender</label>
-            <input type="checkbox" checked="checked" id="gender"><p-->
             <label for="panas">PANAS</label>
             <input type="checkbox" checked="checked" id="panas"><p>
             <label for="ach">ACH GOAL</label>
@@ -82,14 +84,17 @@
       </div>
 
       <div id="playerDetails" class="tabcontent">
+        
+        <div id="network-output" class="flex">
+            <p>Click on the preferred level to start demo.</p>
+        </div>
         <div id="network-input" class="flex">
           <form>
             <label for="summonerid">Identifier:</label>
-            <select id="summonerid">
-            {% for ego, length in ids %}
-            {% if length < 30 %}
-              <option value="{{ego}}">{{ego}} ({{length}})</option>
-            {% endif %}
+            <select id="summonerid" onchange="showPlayer(true)">
+            <option value="" disabled selected>Select ID</option>
+            {% for id, puuid in egoids.items() %}
+              <option value="{{id}}">{{id}} ({{idcount[puuid]}})</option>
             {% endfor %}
             </select>
             <input type="button" value="1 Level" onclick="drawNetwork('egonet', true)">
@@ -97,16 +102,20 @@
             <input type="button" value="Components" onclick="drawNetwork('components', true)">
           </form>
         </div>
-        <div id="network-output" class="flex"></div>
-            <p>Click on the preferred level to start demo.</p>
-        </div>
       </div>
 
       <div id="statistics" class="tabcontent stats">
         <h3>Statistics</h3>
-        <input type="button" value="Show statistics" onclick="loadStatistics()"><p>
-        {% for label in statfields %}
-            <div id="{{label}}" style="width:1000px;height:250px"></div>
+        <input type="button" value="Show statistics" onclick="loadStatistics()">
+        {% for category in statfields %}
+          {% if category != 'DEFAULT' %}
+            <button class="collapsible">{{category}}</button>
+            <div class="collapsible-content">
+            {% for value, label in statfields[category].items() %}
+              <div id="{{value}}" name="{{label}}" style="width:1000px;height:250px"></div>
+            {% endfor %}
+            </div>
+          {% endif %}
         {% endfor %}
       </div>
 </section>
@@ -156,6 +165,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='networkClustering.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='networkVisualization.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='networkPlots.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='networkPlayer.js') }}"></script>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}

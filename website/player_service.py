@@ -17,31 +17,40 @@ RESULT_FILEPATH = ROOT_DIRPATH + config['DATA']['RESULTS']
 with open(DICT_FILEPATH, 'rb') as iddict:
     ids = pickle.load(iddict)
 
-def get_ego_ids():
-    with open(ROOT_DIRPATH + 'egomatchnumbers.pickle', 'rb') as f:
-        return pickle.load(f)
+with open(ROOT_DIRPATH + 'egomatchnumbers.pickle', 'rb') as countdict:
+    numberids = {key: value for key, value in pickle.load(countdict)}
 
-def get_network(puuid, content):
-    resultFile = RESULT_FILEPATH + puuid[0] + '/' + puuid + '.pickle'
+def get_ego_ids():
+    return ids
+
+def get_count_ids():
+    return numberids
+
+def get_network(internalid, content):
+    puuid = ids[int(internalid)]
+    resultFile = RESULT_FILEPATH + puuid[0:2] + '/' + puuid + '.pickle'
     if os.path.exists(resultFile):
         with open(resultFile, 'rb') as f:
             network = pickle.load(f)
             if not content or content == 'all':
                 return network
-            network['nodes'] = network['nodesAlters'].copy()
-            network['edges'] = network['edgesAlters'].copy()
+            response = {}
+            if content == 'details':
+                response['ID'] = network['custId']
+                response['Summoner Name'] = network['name']
+                response['Platform'] = network['platform']
+                response['Level'] = network['level']
+                for key, value in (network['stats'] | network['network'] | network['surveyData']).items():
+                    response[key] = value
+            else:
+                response['nodes'] = network['nodesAlters'].copy()
+                response['edges'] = network['edgesAlters'].copy()
             if content == 'egonet' or content == 'extended':
-                network['nodes'].append(network['nodesEgo'])
-                network['edges'].extend(network['edgesEgo'])
+                response['nodes'].append(network['nodesEgo'])
+                response['edges'].extend(network['edgesEgo'])
             if content == 'extended':
-                network['nodes'].extend(network['nodes2nd'])
-                network['edges'].extend(network['edges2nd'])
+                response['nodes'].extend(network['nodes2nd'])
+                response['edges'].extend(network['edges2nd'])
                 #network['edges'].extend(network['alterties'])
-            del network['nodesAlters']
-            del network['edgesAlters']
-            del network['nodesEgo']
-            del network['edgesEgo']
-            del network['nodes2nd']
-            del network['edges2nd']
-            return network
-    return {'Error': 'Player data for PUUID ' + puuid + ' not found.'}
+            return response
+    return {'Error': 'Player data for ID ' + internalid + ' not found.'}

@@ -8,21 +8,13 @@ function drawNetwork(content, firstTry) {
   edges = [];
   var chooser = document.getElementById('summonerid');
   var key = chooser.options[chooser.selectedIndex].value;
-  var infoDiv = document.getElementById('network-output')
   $.ajax({
     dataType: "json",
     url: "network/" + key + "?content=" + content,
     success: function(data){
       console.log(data)
-      let info = "";
       nodes = data["nodes"];
       edges = data["edges"];
-      for (key in data) {
-        if (!key.includes("nodes") && !key.includes("edges")) {
-          info = info + key + ": " + data[key] + ", ";
-        }
-      }
-      infoDiv.innerHTML = info.substring(0, info.length - 2)
       console.log(nodes.length);
       console.log(edges.length);
       if (nodes.length > 0 && edges.length > 0) {
