@@ -42,7 +42,7 @@
   padding: 1rem;
   border-top: none;
   overflow: visible;
-  max-width: 60rem;
+  max-width: 70rem;
   margin: 0px auto;
 }
 
@@ -139,7 +139,6 @@
 }
 
 .collapsible-content {
-  padding: 0 18px;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;

@@ -32,12 +32,16 @@
       <div class="grid">
         <div class="clustering-details">
           <form id="clustering-features">
-            <label class="checkbox">
+            <!-- label class="checkbox">
               <input type="checkbox" checked="checked">
               Summoner Level
             </label>
             <input type="checkbox" checked="checked" id="degree">
-            <label for="degree">Ego Network Degree</label><p>
+            <label for="degree">Ego Network Degree</label><p -->
+            <label for="level">Summoner Level</label>
+            <input type="checkbox" checked="checked" id="level"><p>
+            <label for="degree">Ego Network Degree</label>
+            <input type="checkbox" checked="checked" id="degree"><p>
             <label for="density">Ego Network Density</label>
             <input type="checkbox" checked="checked" id="density"><p>
             <label for="componentRatio">Ego Network Component Ratio</label>
@@ -72,10 +76,13 @@
               <option value="minmax">MinMax Scaler</option>
               <option value="none">None</option>
             </select><p>
-            <input type="button" value="Elbow Plot" onclick="elbowPlot(true)"><p>
-            <label for="kmeans">K:</label>
-            <input type="number" id="kmeans" name="kmeans" min="1">
-            <input type="button" value="K-Means Clustering" onclick="scatterPlot(true)"><p>
+            <input type="button" class="btn btn-primary" value="Elbow Plot" onclick="elbowPlot(true)"><p>
+            <label for="kmk">K:</label>
+            <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1">
+            <input type="button" class="btn btn-primary" value="K-Means Clustering" onclick="scatterPlot('kmeans', true)"><p>
+            <label for="dbe">ε:</label>
+            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="1">
+            <input type="button" class="btn btn-primary" value="DBSCAN Clustering" onclick="scatterPlot('dbscan', true)"><p>
           </form>
         </div>
         <div class="clustering-results" id="clustering-results">
@@ -84,31 +91,32 @@
       </div>
 
       <div id="playerDetails" class="tabcontent">
-        
-        <div id="network-output" class="flex">
-            <p>Click on the preferred level to start demo.</p>
-        </div>
-        <div id="network-input" class="flex">
-          <form>
-            <label for="summonerid">Identifier:</label>
-            <select id="summonerid" onchange="showPlayer(true)">
+          <form class="flex">
+            <select id="summonerid" class="btn btn-primary" onchange="showPlayer(true)">
             <option value="" disabled selected>Select ID</option>
             {% for id, puuid in egoids.items() %}
               <option value="{{id}}">{{id}} ({{idcount[puuid]}})</option>
             {% endfor %}
             </select>
-            <input type="button" value="1 Level" onclick="drawNetwork('egonet', true)">
-            <input type="button" value="2 Levels" onclick="drawNetwork('extended', true)">
-            <input type="button" value="Components" onclick="drawNetwork('components', true)">
+          </form>
+        <div id="network-output" class="flex">
+            <p>Choose an ID to show player details.</p>
+        </div>
+        <div id="network-input" class="flex">
+          <form>
+            <input type="button" class="btn btn-primary" value="1 Level" onclick="drawNetwork('egonet', true)">
+            <input type="button" class="btn btn-primary" value="2 Levels" onclick="drawNetwork('extended', true)">
+            <input type="button" class="btn btn-primary" value="Components" onclick="drawNetwork('components', true)">
+            <input type="button" class="btn btn-primary" value="Only Teammates" onclick="drawNetwork('team', true)">
+            <input type="button" class="btn btn-primary" value="Only Opponents" onclick="drawNetwork('vs', true)">
           </form>
         </div>
       </div>
 
       <div id="statistics" class="tabcontent stats">
-        <h3>Statistics</h3>
-        <input type="button" value="Show statistics" onclick="loadStatistics()">
+        <p><h3>Statistics</h3></p>
         {% for category in statfields %}
-          {% if category != 'DEFAULT' %}
+          {% if category != 'DEFAULT' and category != 'Player Details' %}
             <button class="collapsible">{{category}}</button>
             <div class="collapsible-content">
             {% for value, label in statfields[category].items() %}

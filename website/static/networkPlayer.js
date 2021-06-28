@@ -8,8 +8,10 @@ function showPlayer(firstTry) {
     success: function(data){
       console.log(data)
       let info = "<table>";
+      let i = 1;
       for (key in data) {
-        info = info + "<tr><td>" + key + "</td><td>" + data[key] + "</td></tr>";
+        info = info + (i % 2 ? "<tr><td>" : "<td>") + key + "</td><td>" + data[key] + (i % 2 ? "</td>" : "</td></tr>");
+        i++;
       }
       info = info + "</table>";
       infoDiv.innerHTML = info;

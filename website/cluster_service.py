@@ -5,7 +5,8 @@ import os
 import io
 from multiprocessing import Process
 from pandas import DataFrame
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
+from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import seaborn as sns
@@ -110,22 +111,34 @@ def prepare_pca(n_components, data, kmeans_labels):
     
     return df_matrix
 
+def prepare_tsne(n_components, data, kmeans_labels):
+    names = ['x', 'y', 'z']
+    matrix = TSNE(n_components=n_components).fit_transform(data)
+    df_matrix = DataFrame(matrix)
+    df_matrix.rename({i:names[i] for i in range(n_components)}, axis=1, inplace=True)
+    #df_matrix['labels'] = kmeans_labels
+    df_matrix['ids'] = list(stat['id'] for stat in statistics)
+    
+    return df_matrix
+
 def get_clustering(args):
     df = prepare_data(args)
-    km = KMeans(n_clusters=int(args['k']))
-    y_kmeans = km.fit_predict(df)
-    
-    pca_df = prepare_pca(3, df, km.labels_)
-    plt.figure()
-    sns.scatterplot(x=pca_df.x, y=pca_df.y, hue=pca_df.labels, palette="Set2")
-    sio = io.BytesIO()
-    plt.savefig(sio, format='svg')
-    svg = sio.getvalue()
-    #pca_df = pca_df.set_index('labels')
-    #d = (pca_df.groupby('Subject_id').apply(lambda x: dict(zip(x['Subject'],x['Score'])))
-    #   .to_dict())
-    #pca_dict = {}
-    #for label in df['labels'].unique():
-    #    pca_dict[label] = [{df['value1'][j]: df['value2'][j]} for j in df[df['name']==i].index]
-    return svg #pca_df.to_dict('index')
+    if (args['clustertype'] == 'kmeans'):
+        model = KMeans(n_clusters=int(args['kmk']))
+        model.fit_predict(df)
+        reduced_df = prepare_pca(3, df, model.labels_)
+    elif (args['clustertype'] == 'dbscan'):
+        min_samples = df.shape[1] + 1 
+        model = DBSCAN(eps=float(args['dbe']), min_samples=min_samples).fit(df)
+        model.fit_predict(df)
+        reduced_df = prepare_tsne(3, df, model.labels_)
+        reduced_df['labels'] = [str(label) for label in model.labels_]
+    else:
+        return {}
+    #plt.figure()
+    #sns.scatterplot(x=pca_df.x, y=pca_df.y, hue=pca_df.labels, palette="Set2")
+    #sio = io.BytesIO()
+    #plt.savefig(sio, format='svg')
+    #svg = sio.getvalue()
+    return reduced_df.groupby('labels')[['x', 'y', 'z', 'ids']].apply(lambda g: g.to_dict('list')).to_dict()
     # return [cols_of_interest] + km.cluster_centers_.tolist()

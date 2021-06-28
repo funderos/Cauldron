@@ -42,6 +42,16 @@ def get_network(internalid, content):
                 response['Level'] = network['level']
                 for key, value in (network['stats'] | network['network'] | network['surveyData']).items():
                     response[key] = value
+            elif content == 'team':
+                network['altersTeam'].append(network['id'])
+                response['nodes'] = list(node for node in network['nodesAlters'] if node['id'] in network['altersTeam'])
+                response['nodes'].append(network['nodesEgo'])
+                response['edges'] = list(edge for edge in network['edgesAlters'] + network['edgesEgo'] if edge['from'] in network['altersTeam'] and edge['to'] in network['altersTeam'] )
+            elif content == 'vs':
+                network['altersVs'].append(network['id'])
+                response['nodes'] = list(node for node in network['nodesAlters'] if node['id'] in network['altersVs'])
+                response['nodes'].append(network['nodesEgo'])
+                response['edges'] = list(edge for edge in network['edgesAlters'] + network['edgesEgo'] if edge['from'] in network['altersVs'] and edge['to'] in network['altersVs'] )
             else:
                 response['nodes'] = network['nodesAlters'].copy()
                 response['edges'] = network['edgesAlters'].copy()

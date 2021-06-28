@@ -4,7 +4,8 @@ function loadStatistics() {
     for (const key in data) {
       var elementId = "stat" + key.replaceAll(" ", "");
       var targetElement = document.getElementById(elementId);
-
+      if (!targetElement) continue;
+      
       var boxPlot = targetElement,
         colors = Array(data.length).fill("#00000"),
         plotdata = [

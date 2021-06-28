@@ -47,6 +47,9 @@ function init() {
 
 function openTab(evt, tabId) {
   evt.currentTarget.className += " active";
+  if (tabId == "statistics") {
+    loadStatistics();
+  }
   showTabContent(tabId);
 }
 
