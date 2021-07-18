@@ -10,7 +10,12 @@ function showPlayer(firstTry) {
       let info = "<table>";
       let i = 1;
       for (key in data) {
-        info = info + (i % 2 ? "<tr><td>" : "<td>") + key + "</td><td>" + data[key] + (i % 2 ? "</td>" : "</td></tr>");
+        let value = data[key];
+        if (!isNaN(value)) {
+          let aFloat = value.toString().split(".");
+          if (aFloat.length > 1) value = aFloat[0] + "." + aFloat[1].substr(0, 4);
+        }
+        info = info + (i % 2 ? "<tr><td>" : "<td>") + key + "</td><td>" + value + (i % 2 ? "</td>" : "</td></tr>");
         i++;
       }
       info = info + "</table>";

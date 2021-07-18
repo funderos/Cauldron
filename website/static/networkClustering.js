@@ -68,6 +68,12 @@ function clusterData(firstTry) {
           traces.push({
             x: data[label]["x"], y: data[label]["y"], z: data[label]["z"],
             mode: "markers",
+            marker: {
+              size: 12,
+              symbol: 'circle',
+              line: {
+              color: 'rgb(0, 0, 0)',
+              width: 1}},
             name: label,
             type: "scatter3d"
           });

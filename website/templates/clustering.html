@@ -18,8 +18,8 @@
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <div id="network-content" class="tabcontent-2">
-    </div>
+    <div id="network-content" class="tabcontent-2"></div>
+    <div id="network-loader" class="tabcontent-2"><div class='loader'></div></div>
   </div>
 
 </div>
@@ -81,7 +81,7 @@
             <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1">
             <input type="button" class="btn btn-primary" value="K-Means Clustering" onclick="scatterPlot('kmeans', true)"><p>
             <label for="dbe">ε:</label>
-            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="1">
+            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" step="0.1">
             <input type="button" class="btn btn-primary" value="DBSCAN Clustering" onclick="scatterPlot('dbscan', true)"><p>
           </form>
         </div>

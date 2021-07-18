@@ -78,6 +78,11 @@ function drawDemo(levels, firstTry) {
 function draw() {
   // Instantiate our network object.
   var container = document.getElementById('network-content');
+  var loader = document.getElementById('network-loader');
+
+  loader.style.display = "flex";
+  container.style.display = "none";
+  
   var data = {
     nodes: nodes,
     edges: edges
@@ -91,4 +96,9 @@ function draw() {
     }
   };
   network = new vis.Network(container, data, options);
+  
+  network.once("afterDrawing", function () {
+    loader.style.display = "none";
+    container.style.display = "flex";
+  });
 }

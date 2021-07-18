@@ -81,7 +81,6 @@ function showTabContent(tabId) {
 // When the user clicks on the button, open the modal
 function openModal() {
   modal.classList.add("modal-open");
-  document.getElementById('network-content').innerHTML = "<div class='loader'></div>";
 }
 
 // When the user clicks on <span> (x), close the modal
