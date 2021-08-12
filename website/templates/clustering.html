@@ -32,12 +32,22 @@
       <div class="grid">
         <div class="clustering-details">
           <form id="clustering-features">
+            {% for category in statfields %}
+              {% if category != 'DEFAULT' and category != 'Player Details' %}
+                {% for value, label in statfields[category].items() %}
+                  <label class="checkbox">
+                    <input type="checkbox" checked="checked" id="{{value}}">
+                    {{label}}
+                  </label>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
             <!-- label class="checkbox">
               <input type="checkbox" checked="checked">
               Summoner Level
             </label>
             <input type="checkbox" checked="checked" id="degree">
-            <label for="degree">Ego Network Degree</label><p -->
+            <label for="degree">Ego Network Degree</label><p>
             <label for="level">Summoner Level</label>
             <input type="checkbox" checked="checked" id="level"><p>
             <label for="degree">Ego Network Degree</label>
@@ -69,7 +79,7 @@
             <label for="pens">PENS</label>
             <input type="checkbox" checked="checked" id="pens"><p>
             <label for="vitality">Vitality</label>
-            <input type="checkbox" checked="checked" id="vitality"><p>
+            <input type="checkbox" checked="checked" id="vitality"><p-->
             <label for="preprocessing">Preprocessing:</label>
             <select id="preprocessing">
               <option value="standard">Standard Scaler</option>

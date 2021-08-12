@@ -3,9 +3,10 @@ import configparser
 import json
 import os
 import io
+import pandas
 from multiprocessing import Process
 from pandas import DataFrame
-from sklearn.cluster import KMeans, DBSCAN
+from sklearn.cluster import KMeans, DBSCAN, SpectralClustering, OPTICS
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
@@ -74,9 +75,11 @@ def prepare_data(args):
         cols_of_interest = []
         for label in statFields:
             for userlabel in args['labels'].split(','):
-                if userlabel.lower() in label.lower():
+                if userlabel.lower() in 'stat' + label.lower():
                     cols_of_interest.append(label)
         df = DataFrame(statistics)[cols_of_interest]
+        pandas.set_option('display.max_columns', None)
+        print(df.head())
         if (args['preprocess'] == 'standard'):
             df = StandardScaler().fit_transform(df)
         if (args['preprocess'] == 'minmax'):
@@ -101,22 +104,15 @@ def get_elbow(args):
     svg = sio.getvalue()
     return svg
 
-def prepare_pca(n_components, data, kmeans_labels):
+def prepare_graph(method, n_components, data, model_labels):
     names = ['x', 'y', 'z']
-    matrix = PCA(n_components=n_components).fit_transform(data)
+    if (method == 'pca'):
+        matrix = PCA(n_components=n_components).fit_transform(data)
+    elif (method == 'tsne'):
+        matrix = TSNE(n_components=n_components).fit_transform(data)
     df_matrix = DataFrame(matrix)
     df_matrix.rename({i:names[i] for i in range(n_components)}, axis=1, inplace=True)
-    df_matrix['labels'] = kmeans_labels
-    df_matrix['ids'] = list(stat['id'] for stat in statistics)
-    
-    return df_matrix
-
-def prepare_tsne(n_components, data, kmeans_labels):
-    names = ['x', 'y', 'z']
-    matrix = TSNE(n_components=n_components).fit_transform(data)
-    df_matrix = DataFrame(matrix)
-    df_matrix.rename({i:names[i] for i in range(n_components)}, axis=1, inplace=True)
-    #df_matrix['labels'] = kmeans_labels
+    df_matrix['labels'] = [str(label) for label in model_labels]
     df_matrix['ids'] = list(stat['id'] for stat in statistics)
     
     return df_matrix
@@ -125,16 +121,17 @@ def get_clustering(args):
     df = prepare_data(args)
     if (args['clustertype'] == 'kmeans'):
         model = KMeans(n_clusters=int(args['kmk']))
-        model.fit_predict(df)
-        reduced_df = prepare_pca(3, df, model.labels_)
     elif (args['clustertype'] == 'dbscan'):
-        min_samples = df.shape[1] + 1 
-        model = DBSCAN(eps=float(args['dbe']), min_samples=min_samples).fit(df)
-        model.fit_predict(df)
-        reduced_df = prepare_tsne(3, df, model.labels_)
-        reduced_df['labels'] = [str(label) for label in model.labels_]
+        min_samples = df.shape[1] + 1
+        model = DBSCAN(eps=float(args['dbe']), min_samples=min_samples)
+    elif (args['clustertype'] == 'spectral'):
+        model = SpectralClustering(n_clusters=int(args['kmk']))
+    elif (args['clustertype'] == 'optics'):
+        model = OPTICS(min_samples=int(args['kmk']))
     else:
         return {}
+    model.fit_predict(df)
+    reduced_df = prepare_graph(args['dimreduce'], 3, df, model.labels_)
     #plt.figure()
     #sns.scatterplot(x=pca_df.x, y=pca_df.y, hue=pca_df.labels, palette="Set2")
     #sio = io.BytesIO()

@@ -54,7 +54,7 @@ function clusterData(firstTry) {
           clusterParams = clusterParams + "&" + val.id + "=" + val.value;
         }
     }
-    let queryString = "?" + labels.slice(0, -1) + "&" + preprocess + "&clustertype=" + clusterType + clusterParams;
+    let queryString = "?" + labels.slice(0, -1) + "&" + preprocess + "&dimreduce=pca&clustertype=" + clusterType + clusterParams;
     $.ajax({
       url: 'cluster' + queryString,
       success: function(data){
