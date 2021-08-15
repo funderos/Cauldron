@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Cauldron | Home{% endblock %}
-{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}"/>{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />{% endblock %}
 
 {% block content %}
 <!-- Showcase -->
@@ -17,32 +17,26 @@
 
     <div class="showcase-form card">
       {% if user.is_authenticated %}
+      {% if user.isRegistered %}
       <h2>Hello {{user.username}},</h2>
       <p>Feel free to test the <a href="/clustering">Clustering</a> Demo!</p>
+      {% else %}
+      <h2>Hello,</h2>
+      <p>You are now logged in as an evaluation user.</p>
+      {% endif %}
       {% else %}
       <h2>Log-In for registered users</h2>
       <form method="POST">
         <div class="form-control">
-          <input
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Username"
-          />
+          <input type="text" name="username" id="username" placeholder="Username" />
         </div>
         <div class="form-control">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-          />
+          <input type="password" name="password" id="password" placeholder="Password" />
         </div>
         <input type="submit" value="Login" class="btn btn-primary" />
       </form>
       <p>
-        If you are interested in participating in the evaluation, please click
-        here to start.
+        If you are interested in participating in the evaluation, please click <a href="/starteval">here</a> to start.
       </p>
       {% endif %}
     </div>
@@ -53,9 +47,21 @@
 <section class="stats">
   <div class="container">
     <h3 class="stats-heading text-center">
+      {% if user.is_authenticated and not user.isRegistered %}
+      Thank you very much for participation!
+      On this website, you are able to cluster (find similar) players from the MOBA game League of Legends
+      using information from played matches, network features and psychological data gathered through a survey.
+      Please take a look at the <a href="/clustering">Clustering</a> section and play around with different parameters
+      and functions the website offers.
+      When you are done, we would like to receive your opinion on some features and the overall experience, as well as
+      some anonymous background information from your side.
+      Please head to the <a href="/finisheval">Finish Evaluation</a> tab when you are ready with testing to fill out the
+      survey.
+      {% else %}
       The Cauldron Project is currently under development and serves as
       visualization tool for large-scaled graph data and statistics. It is part
       of a master thesis.
+      {% endif %}
     </h3>
     <div class="grid grid-2 text-center my-4">
       <div>

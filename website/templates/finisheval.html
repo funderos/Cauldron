@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Cauldron | Finish Evaluation{% endblock %}
+<!-- {% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/clustering.css') }}" />{% endblock %} -->
+{% block content %}
+<section class="eval-form">
+  <h2>Finish Evaluation Survey</h2>
+  <form method="POST">
+    <fieldset>
+      <legend>Website Experience</legend>
+      <table>
+        <tr>
+          <td></td>
+          <td>Strongly agree</td>
+          <td>Somewhat agree</td>
+          <td>Neither agree nor disagree</td>
+          <td>Somewhat disagree</td>
+          <td>Strongly disagree</td>
+        </tr>
+        <tr>
+          <td>
+            Did you try and understand all features of the Clustering section on
+            this website?
+          </td>
+          <td><input type="radio" name="features" value="1" /></td>
+          <td><input type="radio" name="features" value="2" /></td>
+          <td><input type="radio" name="features" value="3" /></td>
+          <td><input type="radio" name="features" value="4" /></td>
+          <td><input type="radio" name="features" value="5" /></td>
+        </tr>
+      </table>
+    </fieldset>
+    <input type="submit" value="Submit Evaluation" class="btn btn-primary" />
+  </form>
+</section>
+{% endblock %}

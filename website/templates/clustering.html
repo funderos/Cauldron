@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Cauldron | Clustering{% endblock %}
-{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/clustering.css') }}" />{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/clustering.css') }}" />{% endblock %}
 {% block options %}onload="init()"{% endblock %}
 
 {% block content %}
@@ -9,163 +10,143 @@
   <div class="tab">
     <button id="linkClustering" class="tablinks" onclick="openTab(event, 'clustering')">Cluster Data</button>
     <button id="linkPlayer" class="tablinks" onclick="openTab(event, 'playerDetails')">Player Details</button>
-    <button id="linkStats" class="tablinks" onclick="openTab(event, 'statistics')">Overall Statistics</button>
+    <button id="linkStats" class="tablinks" onclick="openTab(event, 'statistics')">Statistics</button>
   </div>
 
-<!-- Network Modal -->
-<div id="myModal" class="modal">
+  <!-- Network Modal -->
+  <div id="myModal" class="modal">
 
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div id="network-content" class="tabcontent-2"></div>
-    <div id="network-loader" class="tabcontent-2"><div class='loader'></div></div>
-  </div>
-
-</div>
-
-      <div id="landingtab" class="tabcontent">
-      Please click on a tab.
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div id="network-content" class="tabcontent-2"></div>
+      <div id="network-loader" class="tabcontent-2">
+        <div class='loader'></div>
       </div>
-      <!-- Tab content -->
-      <div id="clustering" class="tabcontent">
-      <div class="grid">
-        <div class="clustering-details">
-          <form id="clustering-features">
-            {% for category in statfields %}
-              {% if category != 'DEFAULT' and category != 'Player Details' %}
-                {% for value, label in statfields[category].items() %}
-                  {% set elementId = "check" + value %}
-                  <label class="checkbox">
-                    <input type="checkbox" checked="checked" id="{{elementId}}">
-                    {{label}}
-                  </label>
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-            <label for="preprocessing">Preprocessing:</label>
-            <select id="preprocessing">
-              <option value="standard">Standard Scaler</option>
-              <option value="minmax">MinMax Scaler</option>
-              <option value="none">None</option>
-            </select><p>
+    </div>
+
+  </div>
+
+  <div id="landingtab" class="tabcontent">
+    Please click on a tab.
+  </div>
+  <!-- Tab content -->
+  <div id="clustering" class="tabcontent">
+    <div class="grid">
+      <div class="clustering-details">
+        <form id="clustering-features">
+          {% for category in statfields %}
+          {% if category != 'DEFAULT' and category != 'Player Details' %}
+          {% for value, label in statfields[category].items() %}
+          {% set elementId = "check" + value %}
+          <label class="checkbox">
+            <input type="checkbox" checked="checked" id="{{elementId}}">
+            {{label}}
+          </label>
+          {% endfor %}
+          {% endif %}
+          {% endfor %}
+          <label for="preprocessing">Preprocessing:</label>
+          <select id="preprocessing">
+            <option value="standard">Standard Scaler</option>
+            <option value="minmax">MinMax Scaler</option>
+            <option value="none">None</option>
+          </select>
+          <p>
             <label for="dimreduce">Dimensionality Reduction for Plot:</label>
             <select id="dimreduce">
               <option value="pca">PCA</option>
               <option value="tsne">TSNE</option>
-            </select><p>
-            <input type="button" class="btn btn-primary" value="Elbow Plot" onclick="elbowPlot(true)"><p>
-            <label for="kmk">K:</label>
-            <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1" value="1">
-            <input type="button" class="btn btn-primary" value="K-Means Clustering" onclick="scatterPlot('kmeans', true)"><p>
-            <label for="dbe">ε:</label>
-            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" value="3.1" step="0.1">
-            <input type="button" class="btn btn-primary" value="DBSCAN Clustering" onclick="scatterPlot('dbscan', true)"><p>
-            <label for="spn">n:</label>
-            <input type="number" class="btn btn-primary" id="spn" name="spn" min="1" value="1">
-            <input type="button" class="btn btn-primary" value="Spectral Clustering" onclick="scatterPlot('spectral', true)"><p>
-            <label for="ops">min. Samples:</label>
-            <input type="number" class="btn btn-primary" id="ops" name="ops" min="1" value="1">
-            <input type="button" class="btn btn-primary" value="OPTICS Clustering" onclick="scatterPlot('optics', true)"><p>
-            <input type="button" class="btn btn-primary" value="Show Clusters per Feature" onclick="updateStats()"><p>
-            <input type="button" class="btn btn-primary" value="Download CSV" onclick="exportCsv()"><p>
-          </form>
-        </div>
-        <div class="clustering-results" id="clustering-results">
-        </div>
-      </div>
-      </div>
-
-      <div id="playerDetails" class="tabcontent">
-          <form class="flex">
-            <select id="summonerid" class="btn btn-primary" onchange="showPlayer(true)">
-            <option value="" disabled selected>Select ID</option>
-            {% for id, puuid in egoids.items() %}
-              <option value="{{id}}">{{id}} ({{idcount[puuid]}})</option>
-            {% endfor %}
             </select>
-          </form>
-        <div id="network-output" class="flex">
-        <table>
-        {% for category in statfields %}
-        {% set ns = namespace(firstit = true) %}
-          {% for value, label in statfields[category].items() %}
-            {% set elementId = "detail" + value %}
-            <tr id="{{elementId}}">
-            {% if ns.firstit %}
-              {% set ns.firstit = false %}
-              <td rowspan="{{statfields[category]|length}}">{{category}}</td>
-            {% endif %}
-            <td>{{label}}</td></tr> 
-          {% endfor %}
-        {% endfor %}
-        </table>
-        </div>
-        <div id="network-input" class="flex">
-          <form>
-            <input type="button" class="btn btn-primary" value="1 Level" onclick="drawNetwork('egonet', true)">
-            <input type="button" class="btn btn-primary" value="2 Levels" onclick="drawNetwork('extended', true)">
-            <input type="button" class="btn btn-primary" value="Components" onclick="drawNetwork('components', true)">
-            <input type="button" class="btn btn-primary" value="Only Teammates" onclick="drawNetwork('team', true)">
-            <input type="button" class="btn btn-primary" value="Only Opponents" onclick="drawNetwork('vs', true)">
-          </form>
-        </div>
-      </div>
-
-      <div id="statistics" class="tabcontent stats">
-        <p><h3>Statistics</h3></p>
-        {% for category in statfields %}
-          {% if category != 'DEFAULT' and category != 'Player Details' %}
-            <button class="collapsible">{{category}}</button>
-            <div class="collapsible-content">
-            {% for value, label in statfields[category].items() %}
-              {% set elementId = "stat" + value %}
-              <div id="{{elementId}}" name="{{label}}" style="width:1000px;height:250px"></div>
-            {% endfor %}
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-</section>
-
-<!-- section class="visualizations">
-  <div class="container flex">
-    <div class="tab">
-      <button class="tablinks" onclick="openTab(event, 'playerDetails')">
-        Player Details
-      </button>
-      <button class="tablinks" onclick="openTab(event, 'clustering')">
-        Cluster Data
-      </button>
-      <button class="tablinks">Placeholder</button>
-      <button class="tablinks">Placeholder</button>
-      <button class="tablinks">Placeholder</button>
-      <button class="tablinks">Placeholder</button>
-      <button class="tablinks">Placeholder</button>
-      <button class="tablinks">Placeholder</button>
-      <button class="tablinks">Placeholder</button>
-    </div>
-
-    <div id="playerDetails">
-      <div id="network-input" class="flex">
-        <form>
-          <label for="summonerid">Identifier:</label>
-          <select id="summonerid">
-            {% for ego, length in ids %}
-            <option value="{{ego}}">{{ego}} ({{length}})</option>
-            {% endfor %}
-          </select>
-          <input type="button" value="Go!" onclick="drawDemo(true)" />
+            <p>
+              <input type="button" class="btn btn-primary" value="Elbow Plot" onclick="elbowPlot(true)">
+              <p>
+                <label for="kmk">K:</label>
+                <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1" value="1">
+                <input type="button" class="btn btn-primary" value="K-Means Clustering"
+                  onclick="scatterPlot('kmeans', true)">
+                <p>
+                  <label for="dbe">ε:</label>
+                  <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" value="3.1" step="0.1">
+                  <input type="button" class="btn btn-primary" value="DBSCAN Clustering"
+                    onclick="scatterPlot('dbscan', true)">
+                  <p>
+                    <label for="spn">n:</label>
+                    <input type="number" class="btn btn-primary" id="spn" name="spn" min="1" value="1">
+                    <input type="button" class="btn btn-primary" value="Spectral Clustering"
+                      onclick="scatterPlot('spectral', true)">
+                    <p>
+                      <label for="ops">min. Samples:</label>
+                      <input type="number" class="btn btn-primary" id="ops" name="ops" min="1" value="1">
+                      <input type="button" class="btn btn-primary" value="OPTICS Clustering"
+                        onclick="scatterPlot('optics', true)">
+                      <p>
+                        <input type="button" class="btn btn-primary" value="Show Clusters per Feature"
+                          onclick="updateStats()">
+                        <p>
+                          <input type="button" class="btn btn-primary" value="Download CSV" onclick="exportCsv()">
+                          <p>
         </form>
       </div>
-
-      <div id="network-output" class="flex"></div>
-      <div id="network-content" class="tabcontent">
-        <p>Click on "Go!"to start demo.</p>
+      <div class="clustering-results" id="clustering-results">
       </div>
     </div>
   </div>
-</section -->
+
+  <div id="playerDetails" class="tabcontent">
+    <form class="flex">
+      <select id="summonerid" class="btn btn-primary" onchange="showPlayer(true)">
+        <option value="" disabled selected>Select ID</option>
+        {% for id, puuid in egoids.items() %}
+        <option value="{{id}}">{{id}} ({{idcount[puuid]}})</option>
+        {% endfor %}
+      </select>
+    </form>
+    <div id="network-output" class="flex">
+      <table>
+        {% for category in statfields %}
+        {% set ns = namespace(firstit = true) %}
+        {% for value, label in statfields[category].items() %}
+        {% set elementId = "detail" + value %}
+        <tr id="{{elementId}}">
+          {% if ns.firstit %}
+          {% set ns.firstit = false %}
+          <td rowspan="{{statfields[category]|length}}">{{category}}</td>
+          {% endif %}
+          <td>{{label}}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+      </table>
+    </div>
+    <div id="network-input" class="flex">
+      <form>
+        <input type="button" class="btn btn-primary" value="1 Level" onclick="drawNetwork('egonet', true)">
+        <input type="button" class="btn btn-primary" value="2 Levels" onclick="drawNetwork('extended', true)">
+        <input type="button" class="btn btn-primary" value="Components" onclick="drawNetwork('components', true)">
+        <input type="button" class="btn btn-primary" value="Only Teammates" onclick="drawNetwork('team', true)">
+        <input type="button" class="btn btn-primary" value="Only Opponents" onclick="drawNetwork('vs', true)">
+      </form>
+    </div>
+  </div>
+
+  <div id="statistics" class="tabcontent stats">
+    <p>
+      <h3>Statistics</h3>
+    </p>
+    {% for category in statfields %}
+    {% if category != 'DEFAULT' and category != 'Player Details' %}
+    <button class="collapsible">{{category}}</button>
+    <div class="collapsible-content">
+      {% for value, label in statfields[category].items() %}
+      {% set elementId = "stat" + value %}
+      <div id="{{elementId}}" name="{{label}}" style="width:1000px;height:250px"></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}
 
 {% block scripts %}
