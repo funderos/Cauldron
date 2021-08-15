@@ -4,6 +4,7 @@ import json
 import os
 import io
 import pandas
+import uuid
 from multiprocessing import Process
 from pandas import DataFrame
 from sklearn.cluster import KMeans, DBSCAN, SpectralClustering, OPTICS
@@ -31,7 +32,7 @@ categorizedStatFields = {}
 for category in statCats:
     categorizedStatFields[category] = {}
     for item in statCats[category]:
-        categorizedStatFields[category][item] = statCats[category][item]
+        categorizedStatFields[category][statCats[category][item]] = item.replace("__", " ")
 
 with open(DICT_FILEPATH, 'rb') as iddict:
     ids = pickle.load(iddict)
@@ -69,13 +70,18 @@ def get_statistics():
                 statsRefactored[key].append(value)
     return statsRefactored
 
+def get_csv(labels):
+    df = DataFrame(statistics)
+    df['label'] = labels
+    print(df.head())
+    return df.to_csv()
 
 def prepare_data(args):
     with open(RESULT_FILEPATH_FILE, 'rb') as f:
         cols_of_interest = []
         for label in statFields:
             for userlabel in args['labels'].split(','):
-                if userlabel.lower() in 'stat' + label.lower():
+                if userlabel.lower() in 'check' + label.lower():
                     cols_of_interest.append(label)
         df = DataFrame(statistics)[cols_of_interest]
         pandas.set_option('display.max_columns', None)
@@ -125,17 +131,15 @@ def get_clustering(args):
         min_samples = df.shape[1] + 1
         model = DBSCAN(eps=float(args['dbe']), min_samples=min_samples)
     elif (args['clustertype'] == 'spectral'):
-        model = SpectralClustering(n_clusters=int(args['kmk']))
+        model = SpectralClustering(n_clusters=int(args['spn']))
     elif (args['clustertype'] == 'optics'):
-        model = OPTICS(min_samples=int(args['kmk']))
+        model = OPTICS(min_samples=int(args['ops']))
     else:
         return {}
     model.fit_predict(df)
     reduced_df = prepare_graph(args['dimreduce'], 3, df, model.labels_)
-    #plt.figure()
-    #sns.scatterplot(x=pca_df.x, y=pca_df.y, hue=pca_df.labels, palette="Set2")
-    #sio = io.BytesIO()
-    #plt.savefig(sio, format='svg')
-    #svg = sio.getvalue()
-    return reduced_df.groupby('labels')[['x', 'y', 'z', 'ids']].apply(lambda g: g.to_dict('list')).to_dict()
+    result = reduced_df.groupby('labels')[['x', 'y', 'z', 'ids']].apply(lambda g: g.to_dict('list')).to_dict()
+    result['labels'] = reduced_df['labels'].to_list()
+    result['exportfn'] = args['clustertype'] + "-" + str(uuid.uuid4()) + "-export.csv"
+    return result
     # return [cols_of_interest] + km.cluster_centers_.tolist()

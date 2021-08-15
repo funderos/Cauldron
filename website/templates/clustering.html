@@ -35,64 +35,40 @@
             {% for category in statfields %}
               {% if category != 'DEFAULT' and category != 'Player Details' %}
                 {% for value, label in statfields[category].items() %}
+                  {% set elementId = "check" + value %}
                   <label class="checkbox">
-                    <input type="checkbox" checked="checked" id="{{value}}">
+                    <input type="checkbox" checked="checked" id="{{elementId}}">
                     {{label}}
                   </label>
                 {% endfor %}
               {% endif %}
             {% endfor %}
-            <!-- label class="checkbox">
-              <input type="checkbox" checked="checked">
-              Summoner Level
-            </label>
-            <input type="checkbox" checked="checked" id="degree">
-            <label for="degree">Ego Network Degree</label><p>
-            <label for="level">Summoner Level</label>
-            <input type="checkbox" checked="checked" id="level"><p>
-            <label for="degree">Ego Network Degree</label>
-            <input type="checkbox" checked="checked" id="degree"><p>
-            <label for="density">Ego Network Density</label>
-            <input type="checkbox" checked="checked" id="density"><p>
-            <label for="componentRatio">Ego Network Component Ratio</label>
-            <input type="checkbox" checked="checked" id="componentRatio"><p>
-            <label for="age">Age</label>
-            <input type="checkbox" checked="checked" id="age"><p>
-            <label for="panas">PANAS</label>
-            <input type="checkbox" checked="checked" id="panas"><p>
-            <label for="ach">ACH GOAL</label>
-            <input type="checkbox" checked="checked" id="ach"><p>
-            <label for="amo">AMO</label>
-            <input type="checkbox" checked="checked" id="amo"><p>
-            <label for="ext">EXT</label>
-            <input type="checkbox" checked="checked" id="ext"><p>
-            <label for="ide">IDE</label>
-            <input type="checkbox" checked="checked" id="ide"><p>
-            <label for="imo">IMO</label>
-            <input type="checkbox" checked="checked" id="imo"><p>
-            <label for="inj">INJ</label>
-            <input type="checkbox" checked="checked" id="inj"><p>
-            <label for="int">INT</label>
-            <input type="checkbox" checked="checked" id="int"><p>
-            <label for="passion">PASSION</label>
-            <input type="checkbox" checked="checked" id="passion"><p>
-            <label for="pens">PENS</label>
-            <input type="checkbox" checked="checked" id="pens"><p>
-            <label for="vitality">Vitality</label>
-            <input type="checkbox" checked="checked" id="vitality"><p-->
             <label for="preprocessing">Preprocessing:</label>
             <select id="preprocessing">
               <option value="standard">Standard Scaler</option>
               <option value="minmax">MinMax Scaler</option>
               <option value="none">None</option>
             </select><p>
+            <label for="dimreduce">Dimensionality Reduction for Plot:</label>
+            <select id="dimreduce">
+              <option value="pca">PCA</option>
+              <option value="tsne">TSNE</option>
+            </select><p>
             <input type="button" class="btn btn-primary" value="Elbow Plot" onclick="elbowPlot(true)"><p>
             <label for="kmk">K:</label>
-            <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1">
+            <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1" value="1">
             <input type="button" class="btn btn-primary" value="K-Means Clustering" onclick="scatterPlot('kmeans', true)"><p>
             <label for="dbe">ε:</label>
-            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" step="0.1">
+            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" value="3.1" step="0.1">
             <input type="button" class="btn btn-primary" value="DBSCAN Clustering" onclick="scatterPlot('dbscan', true)"><p>
+            <label for="spn">n:</label>
+            <input type="number" class="btn btn-primary" id="spn" name="spn" min="1" value="1">
+            <input type="button" class="btn btn-primary" value="Spectral Clustering" onclick="scatterPlot('spectral', true)"><p>
+            <label for="ops">min. Samples:</label>
+            <input type="number" class="btn btn-primary" id="ops" name="ops" min="1" value="1">
+            <input type="button" class="btn btn-primary" value="OPTICS Clustering" onclick="scatterPlot('optics', true)"><p>
+            <input type="button" class="btn btn-primary" value="Show Clusters per Feature" onclick="updateStats()"><p>
+            <input type="button" class="btn btn-primary" value="Download CSV" onclick="exportCsv()"><p>
           </form>
         </div>
         <div class="clustering-results" id="clustering-results">
@@ -110,7 +86,20 @@
             </select>
           </form>
         <div id="network-output" class="flex">
-            <p>Choose an ID to show player details.</p>
+        <table>
+        {% for category in statfields %}
+        {% set ns = namespace(firstit = true) %}
+          {% for value, label in statfields[category].items() %}
+            {% set elementId = "detail" + value %}
+            <tr id="{{elementId}}">
+            {% if ns.firstit %}
+              {% set ns.firstit = false %}
+              <td rowspan="{{statfields[category]|length}}">{{category}}</td>
+            {% endif %}
+            <td>{{label}}</td></tr> 
+          {% endfor %}
+        {% endfor %}
+        </table>
         </div>
         <div id="network-input" class="flex">
           <form>
@@ -130,7 +119,8 @@
             <button class="collapsible">{{category}}</button>
             <div class="collapsible-content">
             {% for value, label in statfields[category].items() %}
-              <div id="{{value}}" name="{{label}}" style="width:1000px;height:250px"></div>
+              {% set elementId = "stat" + value %}
+              <div id="{{elementId}}" name="{{label}}" style="width:1000px;height:250px"></div>
             {% endfor %}
             </div>
           {% endif %}

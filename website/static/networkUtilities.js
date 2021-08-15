@@ -1,6 +1,6 @@
-statistics = [];
-loaded = false;
-modal = document.getElementById("myModal");
+let statistics = [];
+let loaded = false;
+let modal = document.getElementById("myModal");
 
 var coll = document.getElementsByClassName("collapsible");
 var i;

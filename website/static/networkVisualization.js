@@ -14,6 +14,8 @@ function drawNetwork(content, firstTry) {
     success: function(data){
       console.log(data)
       nodes = data["nodes"];
+      nodes[nodes.length - 1]["cid"] = 1;
+      nodes[nodes.length - 1]["label"] = nodes[nodes.length - 1]["label"].toString();
       edges = data["edges"];
       console.log(nodes.length);
       console.log(edges.length);
@@ -25,50 +27,6 @@ function drawNetwork(content, firstTry) {
       console.log(data);
       if (firstTry) {
         drawNetwork(content, false)
-      }
-    },
-    timeout: 1000
-  });
-}
-
-function drawDemo(levels, firstTry) {
-  var chooser = document.getElementById('summonerid');
-  var key = chooser.options[chooser.selectedIndex].value;
-  var infoDiv = document.getElementById('network-output')
-  $.ajax({
-    dataType: "json",
-    url: 'network/' + key,
-    success: function(data){
-      console.log(data)
-      let info = "";
-      nodes = [];
-      edges = [];
-      for (key in data) {
-        if (key.includes("nodes")) {
-          if (key == "nodesEgo") nodes.push(data[key]);
-          else if (levels > 1) nodes.push(...data[key]);
-        } else if (key.includes("edges")) {
-          if (levels > 1) edges.push(...data[key]);
-        } else {
-          info = info + key + ": " + data[key] + ", ";
-        }
-      }
-      if (levels == 1) {
-        nodes.push(...data["nodesAlters"]);
-        edges.push(...data["edgesEgo"]);
-        edges.push(...data["edgesAlters"]);
-      }
-      infoDiv.innerHTML = info.substring(0, info.length - 2)
-      console.log(nodes.length);
-      console.log(edges.length);
-      if (nodes.length > 0 && edges.length > 0) {
-        draw();
-      }
-    },
-    error: function(data){
-      console.log(data);
-      if (firstTry) {
-        drawDemo(false)
       }
     },
     timeout: 1000
@@ -96,9 +54,31 @@ function draw() {
     }
   };
   network = new vis.Network(container, data, options);
+  /*
+  var clusterOptionsByData = {
+    processProperties: function (clusterOptions, childNodes) {
+      clusterOptions.label = "[" + childNodes.length + "]";
+      return clusterOptions;
+    },
+    clusterNodeProperties: {
+      borderWidth: 3,
+      shape: "box",
+      font: { size: 30 },
+    },
+    joinCondition: function(childNodeOptions) {
+      return childNodeOptions.cid != 1;
+    }
+  };
+  network.clusterByHubsize(4, clusterOptionsByData);
+  */
   
-  network.once("afterDrawing", function () {
+  loader.style.display = "none";
+  container.style.display = "flex";
+
+  network.once("afterDrawing", () => {
     loader.style.display = "none";
     container.style.display = "flex";
   });
+
+
 }

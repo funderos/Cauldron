@@ -9,8 +9,11 @@ here = os.path.dirname(__file__)
 config = configparser.ConfigParser()
 config.read(os.path.join(here, 'config.ini'))
 
+statCats = configparser.ConfigParser()
+statCats.optionxform = str
+statCats.read(os.path.join(here, 'stats.ini'))
+
 ROOT_DIRPATH = config['DATA']['ROOT']
-#EGO_DIRPATH = ROOT_DIRPATH + config['DATA']['EGOS']
 DICT_FILEPATH = ROOT_DIRPATH + config['DATA']['DICT']
 RESULT_FILEPATH = ROOT_DIRPATH + config['DATA']['RESULTS']
 
@@ -35,13 +38,12 @@ def get_network(internalid, content):
             if not content or content == 'all':
                 return network
             response = {}
-            if content == 'details':
-                response['ID'] = network['custId']
-                response['Summoner Name'] = network['name']
-                response['Platform'] = network['platform']
-                response['Level'] = network['level']
+            if content == 'details':            
+                response['name'] = network['name']
+                response['platform'] = network['platform']
+                response['level'] = network['level']
                 for key, value in (network['stats'] | network['network'] | network['surveyData']).items():
-                    response[key] = value
+                    response[key.replace(" ", "")] = value
             elif content == 'team':
                 network['altersTeam'].append(network['id'])
                 response['nodes'] = list(node for node in network['nodesAlters'] if node['id'] in network['altersTeam'])
