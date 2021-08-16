@@ -1,6 +1,8 @@
 /* Style the tab content */
 .tabcontent-2 {
   background-color: #fff;
+  justify-content: center;
+  align-items: center;
   display: flex;
   width: 100%;
   height: 100%;
@@ -106,7 +108,6 @@
   border-top: 16px solid #3498db; /* Blue */
   border-radius: 50%;
   position: relative;
-  align-self: baseline;
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
@@ -152,10 +153,33 @@
 
 .checkbox {
   display: block;
+  width: 217px;
+}
+
+.feature-layout {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.param-layout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
 .checkbox input {
   margin-right: 0.5rem;
+}
+
+.boxplot {
+  border-bottom: 2px solid grey;
+  position: relative;
+}
+
+.boxplot p {
+  margin: 10px;
+  position:absolute;
 }
 
 .player-details {
@@ -165,13 +189,21 @@
 }
 
 .player-details td {
-  border: 1px solid #dddddd;
+  border: 1px solid black;
   text-align: left;
   padding: 8px;
 }
 
-.player-details tr:nth-child(even) {
+/*.player-details tr:nth-child(even) {
   background-color: #dddddd;
+} */
+
+.player-details td:first-child {
+  border-left: none;
+}
+
+#network-output {
+  overflow-x: auto;
 }
 
 @keyframes spin {

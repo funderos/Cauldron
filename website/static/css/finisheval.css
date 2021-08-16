@@ -1,0 +1,7 @@
+.tabcontent {
+    padding: 1rem;
+    border-top: none;
+    overflow: visible;
+    max-width: 70rem;
+    margin: 0px auto;
+  }

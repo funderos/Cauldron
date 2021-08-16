@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Cauldron | Finish Evaluation{% endblock %}
-<!-- {% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/clustering.css') }}" />{% endblock %} -->
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/finisheval.css') }}" />{% endblock %}
 {% block content %}
 <section class="eval-form">
+  <div class="tabcontent">
   <h2>Finish Evaluation Survey</h2>
   <form method="POST">
     <fieldset>
@@ -31,5 +32,6 @@
     </fieldset>
     <input type="submit" value="Submit Evaluation" class="btn btn-primary" />
   </form>
+</div>
 </section>
 {% endblock %}

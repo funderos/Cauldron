@@ -32,64 +32,81 @@
   </div>
   <!-- Tab content -->
   <div id="clustering" class="tabcontent">
-    <div class="grid">
+    <div>
       <div class="clustering-details">
         <form id="clustering-features">
-          {% for category in statfields %}
-          {% if category != 'DEFAULT' and category != 'Player Details' %}
-          {% for value, label in statfields[category].items() %}
-          {% set elementId = "check" + value %}
-          <label class="checkbox">
-            <input type="checkbox" checked="checked" id="{{elementId}}">
-            {{label}}
-          </label>
-          {% endfor %}
-          {% endif %}
-          {% endfor %}
-          <label for="preprocessing">Preprocessing:</label>
-          <select id="preprocessing">
-            <option value="standard">Standard Scaler</option>
-            <option value="minmax">MinMax Scaler</option>
-            <option value="none">None</option>
-          </select>
+          <div class=feature-layout>
+            {% for category in statfields %}
+            {% if category != 'DEFAULT' and category != 'Player Details' %}
+            {% for value, label in statfields[category].items() %}
+            {% set elementId = "check" + value %}
+            <label class="checkbox">
+              <input type="checkbox" checked="checked" id="{{elementId}}">
+              {{label}}
+            </label>
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+          </div>
+          <div class=param-layout>
+            <label>Operation:
+              <select id="clustertype">
+                <option value="kmeans">K-Means</option>
+                <option value="dbscan">DBSCAN</option>
+                <option value="spectral">Spectral</option>
+                <option value="optics">OPTICS</option>
+              </select>
+            </label>
+            <label>Preprocessing:
+              <select id="preprocessing">
+                <option value="standard">Standard Scaler</option>
+                <option value="minmax">MinMax Scaler</option>
+                <option value="none">None</option>
+              </select>
+            </label>
+            <label>Param:
+              <input type="number" id="param" name="param" min="1" value="1">
+            </label>
+            <label>Dimensionality Reduction:
+              <select id="dimreduce">
+                <option value="pca">PCA</option>
+                <option value="tsne">TSNE</option>
+              </select>
+            </label>
+          </div>
+          <input type="button" class="btn btn-primary" value="Draw Plot!" onclick="scatterPlot('dbscan', true)">
           <p>
-            <label for="dimreduce">Dimensionality Reduction for Plot:</label>
-            <select id="dimreduce">
-              <option value="pca">PCA</option>
-              <option value="tsne">TSNE</option>
-            </select>
-            <p>
-              <input type="button" class="btn btn-primary" value="Elbow Plot" onclick="elbowPlot(true)">
-              <p>
-                <label for="kmk">K:</label>
-                <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1" value="1">
-                <input type="button" class="btn btn-primary" value="K-Means Clustering"
-                  onclick="scatterPlot('kmeans', true)">
-                <p>
-                  <label for="dbe">ε:</label>
-                  <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" value="3.1" step="0.1">
-                  <input type="button" class="btn btn-primary" value="DBSCAN Clustering"
-                    onclick="scatterPlot('dbscan', true)">
-                  <p>
-                    <label for="spn">n:</label>
-                    <input type="number" class="btn btn-primary" id="spn" name="spn" min="1" value="1">
-                    <input type="button" class="btn btn-primary" value="Spectral Clustering"
-                      onclick="scatterPlot('spectral', true)">
-                    <p>
-                      <label for="ops">min. Samples:</label>
-                      <input type="number" class="btn btn-primary" id="ops" name="ops" min="1" value="1">
-                      <input type="button" class="btn btn-primary" value="OPTICS Clustering"
-                        onclick="scatterPlot('optics', true)">
-                      <p>
-                        <input type="button" class="btn btn-primary" value="Show Clusters per Feature"
-                          onclick="updateStats()">
-                        <p>
-                          <input type="button" class="btn btn-primary" value="Download CSV" onclick="exportCsv()">
-                          <p>
+            <input type="button" class="btn btn-primary" value="Elbow Plot" onclick="elbowPlot(true)">
+          <p>
+            <label for="kmk">K:</label>
+            <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1" value="1">
+            <input type="button" class="btn btn-primary" value="K-Means Clustering"
+              onclick="scatterPlot('kmeans', true)">
+          <p>
+            <label for="dbe">ε:</label>
+            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" value="3.1" step="0.1">
+            <input type="button" class="btn btn-primary" value="DBSCAN Clustering"
+              onclick="scatterPlot('dbscan', true)">
+          <p>
+            <label for="spn">n:</label>
+            <input type="number" class="btn btn-primary" id="spn" name="spn" min="1" value="1">
+            <input type="button" class="btn btn-primary" value="Spectral Clustering"
+              onclick="scatterPlot('spectral', true)">
+          <p>
+            <label for="ops">min. Samples:</label>
+            <input type="number" class="btn btn-primary" id="ops" name="ops" min="1" value="1">
+            <input type="button" class="btn btn-primary" value="OPTICS Clustering"
+              onclick="scatterPlot('optics', true)">
+          <p>
         </form>
       </div>
       <div class="clustering-results" id="clustering-results">
       </div>
+      <div class=param-layout>
+        <input type="button" class="btn btn-primary" value="Show Clusters per Feature" onclick="updateStats()">
+        <input type="button" class="btn btn-primary" value="Download CSV" onclick="exportCsv()">
+      </div>
+
     </div>
   </div>
 
@@ -124,9 +141,15 @@
         <input type="checkbox" id="viscomponents">
       </label>
     </form>
-    <div id="network-output" class="flex">
+    <div id="network-output">
       <table class="player-details">
-        <tr id="detailremove"><td rowspan=2>Operations</td><td>Remove from Table</td></tr><tr id="detailshownetwork"><td>Show Graph</td></tr>
+        <tr id="detailremove">
+          <td rowspan=2>Operations</td>
+          <td>Remove from Table</td>
+        </tr>
+        <tr id="detailshownetwork">
+          <td>Show Graph</td>
+        </tr>
         {% for category in statfields %}
         {% set ns = namespace(firstit = true) %}
         {% for value, label in statfields[category].items() %}
@@ -146,7 +169,7 @@
 
   <div id="statistics" class="tabcontent stats">
     <p>
-      <h3>Statistics</h3>
+    <h3>Statistics</h3>
     </p>
     {% for category in statfields %}
     {% if category != 'DEFAULT' and category != 'Player Details' %}
@@ -154,8 +177,10 @@
     <div class="collapsible-content">
       {% for value, label in statfields[category].items() %}
       {% set elementId = "stat" + value %}
-      <p><b>{{label}}</b></p>
-      <div id="{{elementId}}" name="{{label}}" style="width:1000px;height:250px"></div>
+      <div class="boxplot">
+        <p><b>{{label}}</b></p>
+        <div id="{{elementId}}" name="{{label}}" style="width:1000px;height:250px"></div>
+      </div>
       {% endfor %}
     </div>
     {% endif %}
