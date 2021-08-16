@@ -95,15 +95,38 @@
 
   <div id="playerDetails" class="tabcontent">
     <form class="flex">
-      <select id="summonerid" class="btn btn-primary" onchange="showPlayer(true)">
+      <select id="summonerid">
         <option value="" disabled selected>Select ID</option>
         {% for id, puuid in egoids.items() %}
         <option value="{{id}}">{{id}} ({{idcount[puuid]}})</option>
         {% endfor %}
       </select>
+      <input type="button" class="btn btn-primary" value="Show Player" onclick="showPlayer()">
+    </form>
+    <form class="flex">
+      <label>
+        Visualization Mode
+        <select id="vismode">
+          <option value="egonet" selected>1-Level</option>
+          <option value="extended">2-Level</option>
+        </select>
+      </label>
+      <label>
+        Connections
+        <select id="visconnection">
+          <option value="all" selected>All</option>
+          <option value="team">Teammates</option>
+          <option value="vs">Opponents</option>
+        </select>
+      </label>
+      <label>
+        Hide Ego
+        <input type="checkbox" id="viscomponents">
+      </label>
     </form>
     <div id="network-output" class="flex">
-      <table>
+      <table class="player-details">
+        <tr id="detailremove"><td rowspan=2>Operations</td><td>Remove from Table</td></tr><tr id="detailshownetwork"><td>Show Graph</td></tr>
         {% for category in statfields %}
         {% set ns = namespace(firstit = true) %}
         {% for value, label in statfields[category].items() %}
@@ -119,15 +142,6 @@
         {% endfor %}
       </table>
     </div>
-    <div id="network-input" class="flex">
-      <form>
-        <input type="button" class="btn btn-primary" value="1 Level" onclick="drawNetwork('egonet', true)">
-        <input type="button" class="btn btn-primary" value="2 Levels" onclick="drawNetwork('extended', true)">
-        <input type="button" class="btn btn-primary" value="Components" onclick="drawNetwork('components', true)">
-        <input type="button" class="btn btn-primary" value="Only Teammates" onclick="drawNetwork('team', true)">
-        <input type="button" class="btn btn-primary" value="Only Opponents" onclick="drawNetwork('vs', true)">
-      </form>
-    </div>
   </div>
 
   <div id="statistics" class="tabcontent stats">
@@ -140,6 +154,7 @@
     <div class="collapsible-content">
       {% for value, label in statfields[category].items() %}
       {% set elementId = "stat" + value %}
+      <p><b>{{label}}</b></p>
       <div id="{{elementId}}" name="{{label}}" style="width:1000px;height:250px"></div>
       {% endfor %}
     </div>
@@ -150,11 +165,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='networkUtilities.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='networkClustering.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='networkVisualization.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='networkPlots.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='networkPlayer.js') }}"></script>
-<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}

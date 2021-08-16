@@ -117,8 +117,7 @@ function scatterPlot(clusterType, firstTry) {
           label = point.data.name;
         }
         if (label && pn) {
-          document.getElementById("summonerid").value = data[label]["ids"][pn];
-          showPlayer(true).then(() =>
+          addPlayerToTable(data[label]["ids"][pn]).then(() =>
             openTabManually("linkPlayer", "playerDetails")
           );
         }

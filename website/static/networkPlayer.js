@@ -1,12 +1,12 @@
-function showPlayer(firstTry) {
+function addPlayerToTable(playerId, firstTry = true) {
+  let checkExisting = document.getElementsByClassName(playerId.toString());
+  console.log(checkExisting);
+  if (checkExisting.length) return Promise.resolve();
   return new Promise((resolve, reject) => {
-    var chooser = document.getElementById("summonerid");
-    var key = chooser.options[chooser.selectedIndex].value;
     $.ajax({
       dataType: "json",
-      url: "network/" + key + "?content=details",
+      url: "network/" + playerId + "?mode=details",
       success: function (data) {
-        console.log(data);
         for (key in data) {
           let value = data[key];
           if (!isNaN(value)) {
@@ -14,20 +14,37 @@ function showPlayer(firstTry) {
             if (aFloat.length > 1)
               value = aFloat[0] + "." + aFloat[1].substr(0, 4);
           }
-          console.log(key)
           let row = document.getElementById("detail" + key);
-          row.innerHTML = row.innerHTML + "<td>" + value + "</td>";
+          row.innerHTML = row.innerHTML + "<td class='" + playerId + "'" + ">" + value + "</td>";
         }
+        let row = document.getElementById("detailshownetwork");
+        row.innerHTML = row.innerHTML + "<td class='" + playerId + "'" + ">" + "<input type='button' class='btn btn-primary' value='Show!' onclick='drawNetwork(" + playerId + ")'></input>" + "</td>";
+        row = document.getElementById("detailremove");
+        row.innerHTML = row.innerHTML + "<td class='" + playerId + "'" + ">" + "<input type='button' class='btn btn-primary' value='-' onclick='removePlayerFromTable(" + playerId + ")'></input>" + "</td>";
+
         resolve();
       },
       error: function (data) {
         console.log(data);
         if (firstTry) {
-          return showPlayer(content);
+          return addPlayerToTable(playerId, false);
         }
         reject()
       },
       timeout: 1000,
     });
   });
+}
+
+function removePlayerFromTable(playerId) {
+  let column = document.getElementsByClassName(playerId.toString());
+  while (column[0]) {
+    column[0].parentNode.removeChild(column[0]);
+  }
+}
+
+function showPlayer() {
+  var chooser = document.getElementById("summonerid");
+  var playerId = chooser.options[chooser.selectedIndex].value;
+  return addPlayerToTable(playerId, true);
 }

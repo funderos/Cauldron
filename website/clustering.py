@@ -20,7 +20,7 @@ def _clustering():
 @clustering.route('/network/<puuid>')
 @login_required
 def network(puuid):
-    return jsonify(get_network(puuid, request.args.get('content')))
+    return jsonify(get_network(puuid, request.args))
 
 @clustering.route('/cluster')
 @login_required

@@ -2,15 +2,18 @@ var nodes = null;
 var edges = null;
 var network = null;
 
-function drawNetwork(content, firstTry) {
+function drawNetwork(playerid, firstTry = true) {
   openModal();
   nodes = [];
   edges = [];
-  var chooser = document.getElementById('summonerid');
-  var key = chooser.options[chooser.selectedIndex].value;
+  var chooser = document.getElementById('vismode');
+  var vismode = chooser.options[chooser.selectedIndex].value;
+  chooser = document.getElementById('visconnection');
+  var viscon = chooser.options[chooser.selectedIndex].value;
+  var componentParam = document.getElementById('viscomponents').checked ? "&viscom=true" : "&viscom=false";
   $.ajax({
     dataType: "json",
-    url: "network/" + key + "?content=" + content,
+    url: "network/" + playerid + "?mode=" + vismode + "&viscon=" + viscon + componentParam,
     success: function(data){
       console.log(data)
       nodes = data["nodes"];

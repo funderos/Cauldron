@@ -47,7 +47,7 @@
 }
 
 .stats {
-  padding: 6px 100px;
+  padding: 6px 60px;
   align-content: center;
   align-items: center;
   margin-left: auto;
@@ -146,6 +146,8 @@
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
+  align-content: center;
+  align-items: center;
 }
 
 .checkbox {
@@ -154,6 +156,22 @@
 
 .checkbox input {
   margin-right: 0.5rem;
+}
+
+.player-details {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.player-details td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.player-details tr:nth-child(even) {
+  background-color: #dddddd;
 }
 
 @keyframes spin {

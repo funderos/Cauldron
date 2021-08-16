@@ -42,14 +42,17 @@ function loadStatistics(clusters = null) {
         layout = {
           showlegend: false,
           hovermode: "closest",
+          paper_bgcolor: "rgba(0,0,0,0)",
+          plot_bgcolor: "rgba(0,0,0,0)"
         };
 
       Plotly.newPlot(elementId, plotdata, layout);
 
       boxPlot.on('plotly_click', function(plot){
-        document.getElementById('summonerid').value = plot.points[0].text;
-        showPlayer(true);
         openTabManually("linkPlayer", "playerDetails")
+        addPlayerToTable(plot.points[0].text).then(() =>
+          openTabManually("linkPlayer", "playerDetails")
+        );
       });
     }
   });
