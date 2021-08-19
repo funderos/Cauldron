@@ -48,9 +48,10 @@
             {% endif %}
             {% endfor %}
           </div>
-          <div class=param-layout>
+          <div class="param-layout">
             <label>Operation:
-              <select id="clustertype">
+              <select id="clustertype" onchange="setFeatureFields()">
+                <option value="elbow" selected>Elbow</option>
                 <option value="kmeans">K-Means</option>
                 <option value="dbscan">DBSCAN</option>
                 <option value="spectral">Spectral</option>
@@ -59,50 +60,34 @@
             </label>
             <label>Preprocessing:
               <select id="preprocessing">
-                <option value="standard">Standard Scaler</option>
+                <option value="standard" selected>Standard Scaler</option>
                 <option value="minmax">MinMax Scaler</option>
                 <option value="none">None</option>
               </select>
             </label>
-            <label>Param:
-              <input type="number" id="param" name="param" min="1" value="1">
-            </label>
-            <label>Dimensionality Reduction:
+            <label id="kmk-label" style="display: none">K:
+            <input type="number" id="kmk" name="kmk" min="1" value="1"></label>
+            <label id="dbe-label" style="display: none">ε:
+            <input type="number" id="dbe" name="dbe" min="0" value="3.1" step="0.1"></label>
+            <label id="spn-label" style="display: none">n:
+            <input type="number" id="spn" name="spn" min="1" value="1"></label>
+            <label id="ops-label" style="display: none">Min. Samples:
+            <input type="number" id="ops" name="ops" min="1" value="1"></label>
+            <label id="dimreduce-label" style="display: none" selected>Dimensionality Reduction:
               <select id="dimreduce">
                 <option value="pca">PCA</option>
                 <option value="tsne">TSNE</option>
               </select>
             </label>
           </div>
-          <input type="button" class="btn btn-primary" value="Draw Plot!" onclick="scatterPlot('dbscan', true)">
-          <p>
-            <input type="button" class="btn btn-primary" value="Elbow Plot" onclick="elbowPlot(true)">
-          <p>
-            <label for="kmk">K:</label>
-            <input type="number" class="btn btn-primary" id="kmk" name="kmk" min="1" value="1">
-            <input type="button" class="btn btn-primary" value="K-Means Clustering"
-              onclick="scatterPlot('kmeans', true)">
-          <p>
-            <label for="dbe">ε:</label>
-            <input type="number" class="btn btn-primary" id="dbe" name="dbe" min="0" value="3.1" step="0.1">
-            <input type="button" class="btn btn-primary" value="DBSCAN Clustering"
-              onclick="scatterPlot('dbscan', true)">
-          <p>
-            <label for="spn">n:</label>
-            <input type="number" class="btn btn-primary" id="spn" name="spn" min="1" value="1">
-            <input type="button" class="btn btn-primary" value="Spectral Clustering"
-              onclick="scatterPlot('spectral', true)">
-          <p>
-            <label for="ops">min. Samples:</label>
-            <input type="number" class="btn btn-primary" id="ops" name="ops" min="1" value="1">
-            <input type="button" class="btn btn-primary" value="OPTICS Clustering"
-              onclick="scatterPlot('optics', true)">
-          <p>
+          <div class="param-layout">
+          <input type="button" class="btn btn-primary" value="Draw Plot!" onclick="drawClusterPlot()">
+          </div>
         </form>
       </div>
       <div class="clustering-results" id="clustering-results">
       </div>
-      <div class=param-layout>
+      <div class="param-layout" id="post-cluster-buttons" style="display: none">
         <input type="button" class="btn btn-primary" value="Show Clusters per Feature" onclick="updateStats()">
         <input type="button" class="btn btn-primary" value="Download CSV" onclick="exportCsv()">
       </div>
@@ -123,7 +108,7 @@
     <form class="flex">
       <label>
         Visualization Mode
-        <select id="vismode">
+        <select id="vismode" onchange="toggleConnectionField()">
           <option value="egonet" selected>1-Level</option>
           <option value="extended">2-Level</option>
         </select>

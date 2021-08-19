@@ -1,6 +1,5 @@
 function addPlayerToTable(playerId, firstTry = true) {
   let checkExisting = document.getElementsByClassName(playerId.toString());
-  console.log(checkExisting);
   if (checkExisting.length) return Promise.resolve();
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -47,4 +46,10 @@ function showPlayer() {
   var chooser = document.getElementById("summonerid");
   var playerId = chooser.options[chooser.selectedIndex].value;
   return addPlayerToTable(playerId, true);
+}
+
+function toggleConnectionField() {
+  var chooser = document.getElementById("visconnection");
+  chooser.value = "all";
+  chooser.disabled = document.getElementById("vismode").value == "extended";
 }

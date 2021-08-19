@@ -41,6 +41,26 @@ function clusterData(firstTry) {
   });
 }
 
+function setFeatureFields() {
+  let chooser = document.getElementById("clustertype");
+  let type = chooser.options[chooser.selectedIndex].value;
+  document.getElementById("dimreduce-label").style.display = type == "elbow" ? "none" : "block";
+  document.getElementById("kmk-label").style.display = type == "kmeans" ? "block" : "none";
+  document.getElementById("dbe-label").style.display = type == "dbscan" ? "block" : "none";
+  document.getElementById("spn-label").style.display = type == "spectral" ? "block" : "none";
+  document.getElementById("ops-label").style.display = type == "optics" ? "block" : "none";
+}
+
+function drawClusterPlot() {
+  let chooser = document.getElementById("clustertype");
+  let type = chooser.options[chooser.selectedIndex].value;
+  if (type == "elbow") {
+    elbowPlot(true);
+  } else {
+    scatterPlot(type, true);
+  }
+}
+
 function scatterPlot(clusterType, firstTry) {
   let form = document.getElementById("clustering-features");
   let labels = "labels=";
@@ -106,6 +126,8 @@ function scatterPlot(clusterType, firstTry) {
       };
 
       Plotly.newPlot("clustering-results", traces, layout);
+
+      document.getElementById("post-cluster-buttons").style.display = "block";
       //let resultDiv = document.getElementById('clustering-results')
       //resultDiv.innerHTML = data.slice(data.indexOf("<svg"));
 
@@ -152,7 +174,6 @@ function elbowPlot(firstTry) {
         data.slice(data.indexOf("<svg")) +
         "'>";
       let resultDiv = document.getElementById("clustering-results");
-      console.log(htmlString);
       resultDiv.innerHTML = data.slice(data.indexOf("<svg"));
     },
     error: function (data) {
