@@ -39,7 +39,7 @@ def get_network(internalid, args):
                 return network
             response = {}
             if args['mode'] == 'details':            
-                response['name'] = network['name']
+                response['name'] = "hidden"
                 response['platform'] = network['platform']
                 response['level'] = network['level']
                 for key, value in (network['stats'] | network['network'] | network['surveyData']).items():
