@@ -72,7 +72,7 @@ def get_statistics():
 
 def get_csv(labels):
     df = DataFrame(statistics)
-    df['label'] = labels
+    df['clusternumber'] = labels
     print(df.head())
     return df.to_csv()
 

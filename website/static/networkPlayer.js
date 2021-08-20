@@ -13,6 +13,15 @@ function addPlayerToTable(playerId, firstTry = true) {
             if (aFloat.length > 1)
               value = aFloat[0] + "." + aFloat[1].substr(0, 4);
           }
+          if (key == "Gender") {
+            switch (value) {
+              case "A1": value = "female"; break;
+              case "A2": value = "male"; break;
+              case "A3": value = "non-binary"; break;
+              case "A4": value = "undisclosed"; break;
+              default: value = "invalid value";
+            }
+          }
           let row = document.getElementById("detail" + key);
           row.innerHTML = row.innerHTML + "<td class='" + playerId + "'" + ">" + value + "</td>";
         }
