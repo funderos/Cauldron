@@ -12,9 +12,16 @@ for (i = 0; i < coll.length; i++) {
     if (content.style.maxHeight){
       content.style.maxHeight = null;
     } else {
-      content.style.maxHeight = content.scrollHeight + "px";
+      content.style.maxHeight = 2 * content.scrollHeight + "px";
     } 
   });
+}
+
+function closeAllCollapsibles() {
+  for (i = 0; i < coll.length; i++) {
+    coll[i].classList.remove("collapsible-active");
+    coll[i].nextElementSibling.style.maxHeight = null;
+  }
 }
 
 function getStatArray() {
@@ -39,15 +46,19 @@ function getStatArray() {
   });
 }
 
-function init() {
+function init(taskNumber) {
+  if (taskNumber && taskNumber > 0) {
+    setTaskDescriptionforClusteringPage(taskNumber);
+  }
+  setTooltipsforPlayerFeatures();
   document.getElementById("landingtab").style.display = "block";
-  var chooser = document.getElementById('summonerid');
-  chooser.options[chooser.selectedIndex].value;
+  //var chooser = document.getElementById('summonerid');
+  //chooser.options[chooser.selectedIndex].value;
 }
 
 function openTab(evt, tabId) {
   evt.currentTarget.className += " active";
-  if (tabId == "statistics") {
+  if (tabId == "statistics" && document.getElementById("statPlots").style.display == "") {
     loadStatistics();
   }
   showTabContent(tabId);

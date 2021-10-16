@@ -5,20 +5,15 @@ import os
 import io
 import pandas
 import uuid
-from multiprocessing import Process
-from pandas import DataFrame
 from sklearn.cluster import KMeans, DBSCAN, SpectralClustering, OPTICS
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-import seaborn as sns
 from matplotlib import pyplot as plt
-import numpy as np
-
 
 here = os.path.dirname(__file__)
 config = configparser.ConfigParser()
-config.read(os.path.join(here, 'config.ini'))
+config.read(os.path.join(here, '../config/config.ini'))
 
 ROOT_DIRPATH = config['DATA']['ROOT']
 DICT_FILEPATH = ROOT_DIRPATH + config['DATA']['DICT']
@@ -27,12 +22,21 @@ RESULT_FILEPATH_FILE = ROOT_DIRPATH + config['DATA']['RESULTFILE']
 
 statCats = configparser.ConfigParser()
 statCats.optionxform = str
-statCats.read(os.path.join(here, 'stats.ini'))
+statCats.read(os.path.join(here, '../config/stats.ini'))
 categorizedStatFields = {}
 for category in statCats:
     categorizedStatFields[category] = {}
     for item in statCats[category]:
         categorizedStatFields[category][statCats[category][item]] = item.replace("__", " ")
+
+statTooltips = configparser.ConfigParser()
+statTooltips.optionxform = str
+statTooltips.read(os.path.join(here, '../config/stats_tooltips.ini'))
+categorizedStatFieldTooltips = {}
+for category in statTooltips:
+    categorizedStatFieldTooltips[category] = {}
+    for item in statTooltips[category]:
+        categorizedStatFieldTooltips[category][statTooltips[category][item]] = item.replace("__", " ")
 
 with open(DICT_FILEPATH, 'rb') as iddict:
     ids = pickle.load(iddict)
@@ -60,6 +64,13 @@ def get_categorized_stat_fields(prefix=''):
         statFieldsRenamed[category] = {prefix + categorizedStatFields[category][key].replace(' ', '') : key for key in categorizedStatFields[category]}
     return statFieldsRenamed
 
+def get_stat_field_tooltips(prefix=''):
+    statFieldsRenamed = {}
+    for category in categorizedStatFieldTooltips:
+        statFieldsRenamed[category] = {prefix + categorizedStatFieldTooltips[category][key].replace(' ', '') : key for key in categorizedStatFieldTooltips[category]}
+    print(statFieldsRenamed)
+    return statFieldsRenamed
+
 def get_statistics():
     statsRefactored = dict()
     for field in statFields:
@@ -71,7 +82,7 @@ def get_statistics():
     return statsRefactored
 
 def get_csv(labels):
-    df = DataFrame(statistics)
+    df = pandas.DataFrame(statistics)
     df['clusternumber'] = labels
     print(df.head())
     return df.to_csv()
@@ -81,9 +92,9 @@ def prepare_data(args):
         cols_of_interest = []
         for label in statFields:
             for userlabel in args['labels'].split(','):
-                if userlabel.lower() in 'check' + label.lower():
+                if userlabel.lower() in label.lower():
                     cols_of_interest.append(label)
-        df = DataFrame(statistics)[cols_of_interest]
+        df = pandas.DataFrame(statistics)[cols_of_interest]
         pandas.set_option('display.max_columns', None)
         print(df.head())
         if (args['preprocess'] == 'standard'):
@@ -116,7 +127,7 @@ def prepare_graph(method, n_components, data, model_labels):
         matrix = PCA(n_components=n_components).fit_transform(data)
     elif (method == 'tsne'):
         matrix = TSNE(n_components=n_components).fit_transform(data)
-    df_matrix = DataFrame(matrix)
+    df_matrix = pandas.DataFrame(matrix)
     df_matrix.rename({i:names[i] for i in range(n_components)}, axis=1, inplace=True)
     df_matrix['labels'] = [str(label) for label in model_labels]
     df_matrix['ids'] = list(stat['id'] for stat in statistics)
@@ -142,4 +153,3 @@ def get_clustering(args):
     result['labels'] = reduced_df['labels'].to_list()
     result['exportfn'] = args['clustertype'] + "-" + str(uuid.uuid4()) + "-export.csv"
     return result
-    # return [cols_of_interest] + km.cluster_centers_.tolist()

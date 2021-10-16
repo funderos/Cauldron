@@ -17,6 +17,12 @@
   background-color: #f1f1f1;
 }
 
+.clustering-results {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
 /* Style the buttons that are used to open the tab content */
 .tab button {
   background-color: inherit;
@@ -44,7 +50,7 @@
   padding: 1rem;
   border-top: none;
   overflow: visible;
-  max-width: 70rem;
+  max-width: 150rem;
   margin: 0px auto;
 }
 
@@ -144,16 +150,19 @@
 
 .collapsible-content {
   max-height: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
   align-content: center;
   align-items: center;
+  display: flex;
+  flex-direction: row;
 }
 
 .checkbox {
   display: block;
-  width: 217px;
+  width: 450px;
 }
 
 .feature-layout {
@@ -161,11 +170,11 @@
   flex-wrap: wrap;
 }
 
-.param-layout {
+.btn-layout-ctr {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 1rem;
 }
 
 .checkbox input {
@@ -173,13 +182,36 @@
 }
 
 .boxplot {
-  border-bottom: 2px solid grey;
   position: relative;
 }
 
 .boxplot p {
-  margin: 10px;
+  margin: 0 10px;
   position:absolute;
+}
+
+/* Evaluation Bar */
+.evalcontent {
+  background-color: #e95656;
+}
+
+.wrapper{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.evalbar {
+  display: flex;
+  margin: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.evalbar span{
+  position: absolute;
+  left: 10px;
 }
 
 .player-details {
@@ -219,8 +251,128 @@
 .clustering-details {
   flex: 25%;
 }
-
-.clustering-results {
-  flex: 75%;
-}
 */
+
+.qtip {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-style: normal;
+  transition:all .25s ease-in-out
+}
+.qtip:hover {color:#069;border-bottom:0.05em dotted #069}
+/*the tip*/
+.qtip:before {
+  content: attr(data-tip);
+  font-size: 12px;
+  position: absolute;
+  background: rgba(10, 20, 30, 0.85);
+  color: #fff;
+  line-height: 1.2em;
+  padding: 0.5em;
+  font-style: normal;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  min-width: 20rem;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .3s ease-in-out;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  font-family: sans-serif;
+  letter-spacing: 0;
+  font-weight: 600
+}
+.qtip:after {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  content: '';
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .3s ease-in-out
+}
+.qtip:hover:before,
+.qtip:hover:after {
+  visibility: visible;
+  opacity: 1
+}
+/*top*/
+.qtip.tip-top:before {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, calc(-100% - 8px));
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+.qtip.tip-top:after {
+  border-width: 8px 8px 0 8px;
+  border-color: rgba(10, 20, 30, 0.85) transparent transparent transparent;
+  top: -8px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+/*bottom*/
+.qtip.tip-bottom:before {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, calc(100% + 8px));
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+.qtip.tip-bottom:after {
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent rgba(10, 20, 30, 0.85) transparent;
+  bottom: -8px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+/*left*/
+.qtip.tip-left:before {
+  left: 0;
+  top: 50%;
+  transform: translate(calc(-100% - 8px), -50%);
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+.qtip.tip-left:after {
+  border-width: 8px 0 8px 8px;
+  border-color: transparent transparent transparent rgba(10, 20, 30, 0.85);
+  left: -8px;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+/*right*/
+.qtip.tip-right:before {
+  right: 0;
+  top: 50%;
+  transform: translate(calc(100% + 8px), -50%);
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+.qtip.tip-right:after {
+  border-width: 8px 8px 8px 0;
+  border-color: transparent rgba(10, 20, 30, 0.85) transparent transparent;
+  right: -8px;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+code {
+  color: #3bb4e5;
+  font-size: 0.8em;
+  padding: 1em;
+  background: rgb(10,20,30);
+  display: block;
+  text-align:left;
+}
+
+.qcontent {
+  color: #ff0;
+  font-weight: bold
+}
+.qclass {
+  color: #dd0;
+  font-weight: bold
+}

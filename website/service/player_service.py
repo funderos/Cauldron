@@ -1,13 +1,10 @@
 import pickle
 import configparser
-import json
 import os
-from multiprocessing import Process
-
 
 here = os.path.dirname(__file__)
 config = configparser.ConfigParser()
-config.read(os.path.join(here, 'config.ini'))
+config.read(os.path.join(here, '../config/config.ini'))
 
 statCats = configparser.ConfigParser()
 statCats.optionxform = str
@@ -21,7 +18,7 @@ with open(DICT_FILEPATH, 'rb') as iddict:
     ids = pickle.load(iddict)
 
 with open(ROOT_DIRPATH + 'egomatchnumbers.pickle', 'rb') as countdict:
-    numberids = {key: value for key, value in pickle.load(countdict)}
+    numberids = {int(key): value for key, value in pickle.load(countdict).items()}
 
 def get_ego_ids():
     return ids
@@ -42,6 +39,7 @@ def get_network(internalid, args):
                 response['name'] = "hidden"
                 response['platform'] = network['platform']
                 response['level'] = network['level']
+                response['matchcount'] = network['matchcount']
                 for key, value in (network['stats'] | network['network'] | network['surveyData']).items():
                     response[key.replace(" ", "")] = value
                 return response

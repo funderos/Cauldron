@@ -1,45 +1,8 @@
 let data = null;
-
-function clusterData(firstTry) {
-  let form = document.getElementById("clustering-features");
-  let labels = "labels=";
-  let k = "";
-  let chooser = document.getElementById("preprocessing");
-  let preprocess = "preprocess=" + chooser.options[chooser.selectedIndex].value;
-  for (let i = 0; i < form.length; i++) {
-    let val = form.elements[i];
-    if (val.type == "checkbox" && val.checked) {
-      labels = labels + val.id + ",";
-    }
-    if (val.type == "number") {
-      k = "k=" + val.value;
-    }
-  }
-  let queryString = "?" + labels.slice(0, -1) + "&" + preprocess + "&" + k;
-  $.ajax({
-    dataType: "json",
-    url: "cluster" + queryString,
-    success: function (data) {
-      let htmlString = "<table style='width:100%'>";
-      data.forEach((row) => {
-        htmlString += "<tr>";
-        row.forEach((val) => {
-          htmlString = htmlString + "<th>" + val + "</th>";
-        });
-        htmlString += "</tr>";
-      });
-      htmlString += "</table>";
-      let resultDiv = document.getElementById("clustering-results");
-      resultDiv.innerHTML = htmlString;
-    },
-    error: function (data) {
-      if (firstTry) {
-        clusterData(false);
-      }
-    },
-    timeout: 1000,
-  });
-}
+let labels = [];
+let clusterParams = new Map();
+//let loader = document.getElementById('clustering-loader');
+let resultPlot = document.getElementById("clustering-results");
 
 function setFeatureFields() {
   let chooser = document.getElementById("clustertype");
@@ -51,9 +14,32 @@ function setFeatureFields() {
   document.getElementById("ops-label").style.display = type == "optics" ? "block" : "none";
 }
 
+function selectAll(selected) {
+  let form = document.getElementById("clustering-features");
+  for (let i = 0; i < form.length; i++) {
+    form.elements[i].checked = selected;
+  }
+}
+
 function drawClusterPlot() {
+  document.getElementById("post-cluster-buttons").style.display = "none";
+  resultPlot.innerHTML = "<div class='loader'></div>"
   let chooser = document.getElementById("clustertype");
   let type = chooser.options[chooser.selectedIndex].value;
+
+  labels = [];
+  clusterParams.clear();
+  let form = document.getElementById("clustering-features");
+  for (let i = 0; i < form.length; i++) {
+    let val = form.elements[i];
+    if (val.type == "checkbox" && val.checked) {
+      labels.push(val.id.substr(5));
+    }
+    if (val.type == "number" && val.value) {
+      clusterParams.set(val.id, val.value);
+    }
+  }
+  
   if (type == "elbow") {
     elbowPlot(true);
   } else {
@@ -63,37 +49,27 @@ function drawClusterPlot() {
 
 function scatterPlot(clusterType, firstTry) {
   let form = document.getElementById("clustering-features");
-  let labels = "labels=";
-  let clusterParams = "";
   let chooser = document.getElementById("preprocessing");
   let preprocess =
     "&preprocess=" + chooser.options[chooser.selectedIndex].value;
   chooser = document.getElementById("dimreduce");
   let dimreduce = "&dimreduce=" + chooser.options[chooser.selectedIndex].value;
-  for (let i = 0; i < form.length; i++) {
-    let val = form.elements[i];
-    if (val.type == "checkbox" && val.checked) {
-      labels = labels + val.id + ",";
-    }
-    if (val.type == "number" && val.value) {
-      clusterParams = clusterParams + "&" + val.id + "=" + val.value;
-    }
-  }
+  let clusterParamString = "";
+  clusterParams.forEach((value, key) => clusterParamString = clusterParamString + "&" + key + "=" + value);
+ 
   let queryString =
-    "?" +
-    labels.slice(0, -1) +
+    "?labels=" +
+    labels.join() +
     preprocess +
     dimreduce +
     "&clustertype=" +
     clusterType +
-    clusterParams;
+    clusterParamString;
   $.ajax({
     url: "cluster" + queryString,
     success: (results) => {
-      //let htmlString = "<img src='data:image/svg+xml;utf8," + data.slice(data.indexOf("<svg")) + "'>"
       data = results;
       let traces = [];
-      let resultPlot = document.getElementById("clustering-results");
       resultPlot.innerHTML = "";
       //Plotly.purge("clustering-results");
 
@@ -127,9 +103,7 @@ function scatterPlot(clusterType, firstTry) {
 
       Plotly.newPlot("clustering-results", traces, layout);
 
-      document.getElementById("post-cluster-buttons").style.display = "block";
-      //let resultDiv = document.getElementById('clustering-results')
-      //resultDiv.innerHTML = data.slice(data.indexOf("<svg"));
+      document.getElementById("post-cluster-buttons").style.display = "flex";
 
       resultPlot.on("plotly_click", function (plotdata) {
         var pn = "";
@@ -155,26 +129,13 @@ function scatterPlot(clusterType, firstTry) {
 }
 
 function elbowPlot(firstTry) {
-  let form = document.getElementById("clustering-features");
-  let labels = "labels=";
   let chooser = document.getElementById("preprocessing");
   let preprocess = "preprocess=" + chooser.options[chooser.selectedIndex].value;
-  for (let i = 0; i < form.length; i++) {
-    let val = form.elements[i];
-    if (val.type == "checkbox" && val.checked) {
-      labels = labels + val.id + ",";
-    }
-  }
-  let queryString = "?" + labels.slice(0, -1) + "&" + preprocess;
+  let queryString = "?labels=" + labels.join() + "&" + preprocess;
   $.ajax({
     url: "elbow" + queryString,
     success: function (data) {
-      let htmlString =
-        "<img src='data:image/svg+xml;utf8," +
-        data.slice(data.indexOf("<svg")) +
-        "'>";
-      let resultDiv = document.getElementById("clustering-results");
-      resultDiv.innerHTML = data.slice(data.indexOf("<svg"));
+      resultPlot.innerHTML = data.slice(data.indexOf("<svg"));
     },
     error: function (data) {
       if (firstTry) {
@@ -186,7 +147,7 @@ function elbowPlot(firstTry) {
 }
 
 function updateStats() {
-  loadStatistics(data);
+  loadStatistics(data, labels);
   openTabManually("linkStats", "statistics");
 }
 

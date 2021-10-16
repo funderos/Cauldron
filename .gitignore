@@ -1,6 +1,6 @@
 .vscode
 website/__pycache__
 website/users.db
-website/config.ini
+website/config/config.ini
 tasks/task_config.ini
 Logs

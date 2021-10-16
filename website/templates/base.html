@@ -27,19 +27,19 @@
         <img src="{{ url_for('static', filename='images/logos/cauldron.png') }}" alt="" />
         <h1 class="logo">Cauldron</h1>
       </div>
+      {% if not user.is_authenticated or user.isRegistered %}
       <nav>
         <ul>
           <li><a href="/">Home</a></li>
           {% if user.is_authenticated %}
           <li><a href="/clustering">Clustering</a></li>
-          {% if user.isRegistered %}
           <li><a href="/logout">Logout</a></li>
           {% else %}
-          <li><a href="/finisheval">Finish Evaluation</a></li>
-          {% endif %}
+          <li><a href="/eval">Start Evaluation</a></li>
           {% endif %}
         </ul>
       </nav>
+      {% endif %}
     </div>
   </div>
 
@@ -64,6 +64,7 @@
   </div>
 
   <div class="childcontent">{% block content %} {% endblock %}</div>
+  <div class="evalcontent">{% block evalbarcontent %} {% endblock %}</div>
 
   <!-- Footer -->
   <footer class="footer bg-dark py-5">
@@ -72,19 +73,21 @@
         <h1>Cauldron</h1>
         <p>Copyright &copy; 2021</p>
       </div>
+      {% if not user.is_authenticated or user.isRegistered %}
       <nav class="text-center">
         <ul>
           <li><a href="/">Home</a></li>
           {% if user.is_authenticated %}
           <li><a href="/clustering">Clustering</a></li>
-          {% if user.isRegistered %}
           <li><a href="/logout">Logout</a></li>
           {% else %}
-          <li><a href="/finisheval">Finish Evaluation</a></li>
-          {% endif %}
+          <li><a href="/eval">Start Evaluation</a></li>
           {% endif %}
         </ul>
       </nav>
+      {% else %}
+      <div></div>
+      {% endif %}
       <div class="social text-right">
         <a href="https://github.com/funderos/Cauldron"><i class="fab fa-github fa-2x"></i></a>
       </div>

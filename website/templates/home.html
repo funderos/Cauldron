@@ -26,7 +26,7 @@
       {% endif %}
       {% else %}
       <h2>Log-In for registered users</h2>
-      <form method="POST">
+      <form method="POST" action="/login">
         <div class="form-control">
           <input type="text" name="username" id="username" placeholder="Username" />
         </div>
@@ -36,7 +36,7 @@
         <input type="submit" value="Login" class="btn btn-primary" />
       </form>
       <p>
-        If you are interested in participating in the evaluation, please click <a href="/starteval">here</a> to start.
+        If you are interested in participating in the evaluation, please click <a href="/eval">here</a> to start.
       </p>
       {% endif %}
     </div>

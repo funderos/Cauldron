@@ -1,0 +1,12 @@
+{% extends "eval.html" %}
+{% block options %}onload="setTaskDescription({{progress}})"{% endblock %}
+{% block evalcontent %}
+<div id="taskdesc"></div>
+{% if progress == 0 %}
+<form method="GET" action="/eval/tasks">
+{% else %}
+<form method="GET" action="/clustering">
+{% endif %}
+    <input type="submit" class="btn btn-primary" value="Continue!"/>
+</form>
+{% endblock %}

@@ -58,6 +58,20 @@
   color: #fff;
 }
 
+.btn-red {
+  background-color: darkred;
+  color: #fff;
+  margin-left: 2px;
+}
+
+.txtfd {
+  display: inline-block;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin: 0 2px;
+}
+
 .bg-primary a,
 .btn-primary a,
 .bg-secondary a,
@@ -145,6 +159,14 @@
 
 .my-5 {
   margin: 4rem 0;
+}
+
+.mx-1 {
+  margin: 0 1rem;
+}
+
+.mx-2 {
+  margin: 0 1.5rem;
 }
 
 .m-1 {

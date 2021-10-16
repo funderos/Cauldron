@@ -1,34 +1,43 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import User
+from ..models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import db
+from .. import db
 from flask_login import login_user, login_required, logout_user, current_user
+from ..service.eval_service import create_eval_file
+from datetime import timedelta
 import configparser
+import uuid
 import os
 here = os.path.dirname(__file__)
 
-
 auth = Blueprint('auth', __name__)
 
+@auth.route('/login', methods=['POST'])
+def home():
+    username = request.form.get('username')
+    password = request.form.get('password')
 
-@auth.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        user = User.query.filter_by(email=email).first()
-        if user:
-            if check_password_hash(user.password, password):
-                flash('Logged in successfully!', category='success')
-                login_user(user, remember=True)
-                return redirect(url_for('views.home'))
-            else:
-                flash('Incorrect password, try again.', category='error')
+    user = User.query.filter_by(username=username).first()
+    if user and user.isRegistered:
+        if check_password_hash(user.password, password):
+            flash('Logged in successfully!', category='success')
+            login_user(user, remember=True)
+            return redirect(url_for('views.home'))
         else:
-            flash('Email does not exist.', category='error')
+            flash('Incorrect password, try again.', category='error')
+    else:
+        flash('Username does not exist.', category='error')
 
-    return render_template("login.html", user=current_user)
+@auth.route('/starteval')
+def start_eval():
+    userId = str(uuid.uuid4())
+    user = User(username=userId, isRegistered=False, password=generate_password_hash(str(uuid.uuid4()), method='sha256'))
+    db.session.add(user)
+    db.session.commit()
+    flash('Evaluation started successfully!', category='success')
+    login_user(user, remember=True)
+    create_eval_file(userId)
+    return render_template("eval/tasks.html", user=current_user, progress=0)
 
 
 @auth.route('/logout')
@@ -36,6 +45,12 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('views.home'))
+
+@auth.route('/finisheval')
+@login_required
+def finish_eval():
+    logout_user()
+    return render_template("eval/completed.html", user=current_user)
 
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
