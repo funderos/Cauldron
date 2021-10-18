@@ -31,7 +31,20 @@ function drawNetwork(playerid, firstTry = true) {
       edges = data["edges"];
       if (vismode == "extended") {
         activeParents = [];
-        nodes.filter(node => !node.parents).forEach(innerNode => innerNode["label"] = innerNode["label"] + ` [${nodes.filter(child => child["parents"] && child["parents"].includes(innerNode["id"])).length}]`);
+        nodes
+          .filter((node) => !node.parents)
+          .forEach(
+            (innerNode) =>
+              (innerNode["label"] =
+                innerNode["label"] +
+                ` [${
+                  nodes.filter(
+                    (child) =>
+                      child["parents"] &&
+                      child["parents"].includes(innerNode["id"])
+                  ).length
+                }]`)
+          );
       }
       console.log(nodes.length);
       console.log(edges.length);
@@ -45,7 +58,7 @@ function drawNetwork(playerid, firstTry = true) {
         drawNetwork(content, false);
       }
     },
-    timeout: 1000,
+    timeout: 5000,
   });
 }
 
@@ -65,7 +78,7 @@ function draw() {
   var loader = document.getElementById("network-loader");
 
   loader.style.display = "flex";
-  container.style.display = "none";
+  container.style.display = "flex";
 
   var data = {
     nodes: nodes.filter(
@@ -86,6 +99,10 @@ function draw() {
 
   network = new vis.Network(container, data, options);
 
+  network.on("stabilizationIterationsDone", function () {
+    loader.style.display = "none";
+  });
+
   if (activeParents) {
     network.on("doubleClick", function (params) {
       that.toggleParent(params.nodes[0]);
@@ -94,41 +111,12 @@ function draw() {
           !node.parents ||
           node.parents.some((parent) => activeParents.includes(parent))
       );
-      let parentNode = data.nodes.find(pn => pn["id"] == params.nodes[0]);
+      let parentNode = data.nodes.find((pn) => pn["id"] == params.nodes[0]);
       parentNode["x"] = params.event.center.x;
       parentNode["y"] = params.event.center.y;
       network.setData(data);
       network.redraw();
+      loader.style.display = "flex";
     });
   }
-  /*
-
-  nodes
-    .filter((node) => !node["parents"])
-    .forEach((alternode) => {
-      network.clusterByConnection(alternode["id"], {
-        joinCondition: function (parentNodeOptions, childNodeOptions) {
-          return (
-            childNodeOptions.parents &&
-            childNodeOptions.parents.includes(parentNodeOptions.id)
-          );
-        },
-        clusterNodeProperties: {
-          label: alternode["label"] + "[" + network.getNodesInCluster(alternode["id"]).length + "]"
-        }
-      });
-    });
-
-  nodes.pop();
-  network.setData(data);
-  network.redraw();
-    */
-
-  loader.style.display = "none";
-  container.style.display = "flex";
-
-  network.once("afterDrawing", () => {
-    loader.style.display = "none";
-    container.style.display = "flex";
-  });
 }

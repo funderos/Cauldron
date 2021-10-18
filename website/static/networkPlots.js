@@ -47,7 +47,9 @@ function loadStatistics(clusters = null, labels = []) {
               boxpoints: "all",
               jitter: 0.3,
               pointpos: 0,
-              marker:{},
+              marker:{
+                opacity: 0.4
+              },
               name: tracekey,
               text: data["id"].filter((e, i) => traces[tracekey].some(j => i === j)),
               hovertemplate: '<b>%{text}</b>: %{x}'

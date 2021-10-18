@@ -23,11 +23,13 @@ def _clustering():
 @clustering.route('/network/<puuid>')
 @login_required
 def network(puuid):
+    print(puuid)
     res = get_network(puuid, request.args)
+    print(res)
     if not current_user.isRegistered:
         req = {'timestamp': time.time(), 'route': '/network/' + puuid, 'method': 'POST', 'args': request.args, 'response': res}
         write_eval_request_log(current_user.username, req)
-    return jsonify(res)
+    return res
 
 @clustering.route('/cluster')
 @login_required

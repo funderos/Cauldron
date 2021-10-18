@@ -134,7 +134,7 @@ function addPlayerToTable(playerId, firstTry = true) {
         }
         reject();
       },
-      timeout: 1000,
+      timeout: 5000,
     });
   });
 }
