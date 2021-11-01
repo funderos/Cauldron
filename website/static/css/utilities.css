@@ -62,6 +62,7 @@
   background-color: darkred;
   color: #fff;
   margin-left: 2px;
+  float: right;
 }
 
 .txtfd {
@@ -70,6 +71,17 @@
   border: none;
   border-radius: 5px;
   margin: 0 2px;
+}
+
+.txtarea {
+  display: inline-block;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin: 0 2px;
+  width: 600px;
+  height: 100px;
+  font-family: 'Noto Sans JP', sans-serif;
 }
 
 .bg-primary a,
@@ -104,6 +116,10 @@
 
 .text-center {
   text-align: center;
+}
+
+.text-center ul {
+  list-style-type: none;
 }
 
 .text-right {

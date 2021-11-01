@@ -25,11 +25,11 @@ def tasks():
 def survey():
     if request.method == 'GET':
         progress = get_eval_progress(current_user.username)
-        if progress > 9:
+        if progress > 10:
             return redirect(url_for('auth.finish_eval'))
-        return render_template("eval/survey.html", user=current_user, surveycontent=get_survey_data(current_user.username, progress))
+        return render_template("eval/survey.html", user=current_user, progress=progress)
     else:
-        req = {'timestamp': time.time(), 'route': '/survey', 'method': 'POST', 'args': request.json}
+        req = {'timestamp': time.time(), 'route': '/survey', 'method': 'POST', 'args': request.form}
         write_eval_request_log(current_user.username, req)
         increment_progress(current_user.username)
         return redirect(url_for('evaluation.survey'))

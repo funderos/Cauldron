@@ -1,51 +1,60 @@
-.dropdown-check-list {
-    display: inline-block;
+.dropdown {
+  position: relative;
+  font-size: 14px;
+  color: #333;
+  width: 260px;
+  display: inline-block;
+  padding: 3px 0 10px;
 }
-
-.dropdown-check-list .anchor {
-    position: relative;
-    cursor: pointer;
-    display: inline-block;
-    padding: 5px 50px 5px 10px;
-    border: 1px solid #ccc;
+.dropdown .dropdown-list {
+  padding: 8px;
+  background: #fff;
+  position: absolute;
+  top: 30px;
+  left: 2px;
+  right: 2px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, .15);
+  transform-origin: 50% 0;
+  transform: scale(1, 0);
+  transition: transform 0.15s ease-in-out 0.15s;
+  max-height: 275px;
+  overflow-y: scroll;
+  border-radius: 5px;
 }
-
-.dropdown-check-list .anchor:after {
-    position: absolute;
-    content: "";
-    border-left: 2px solid black;
-    border-top: 2px solid black;
-    padding: 5px;
-    right: 10px;
-    top: 20%;
-    -moz-transform: rotate(-135deg);
-    -ms-transform: rotate(-135deg);
-    -o-transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    transform: rotate(-135deg);
+.dropdown .dropdown-option {
+  display: block;
+  padding: 2px 3px;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
 }
-
-.dropdown-check-list .anchor:active:after {
-    right: 8px;
-    top: 21%;
+.dropdown .dropdown-label {
+  display: block;
+  height: 30px;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 0 2px;
 }
-
-.dropdown-check-list ul.items {
-    padding: 2px;
-    display: none;
-    margin: 0;
-    border: 1px solid #ccc;
-    border-top: none;
+.dropdown .dropdown-label:before {
+  content: '▼';
+  float: right;
 }
-
-.dropdown-check-list ul.items li {
-    list-style: none;
+.dropdown.on .dropdown-list {
+  transform: scale(1, 1);
+  transition-delay: 0s;
 }
-
-.dropdown-check-list.visible .anchor {
-    color: #0094ff;
+.dropdown.on .dropdown-list .dropdown-option {
+  opacity: 1;
+  transition-delay: 0.2s;
 }
-
-.dropdown-check-list.visible .items {
-    display: block;
+.dropdown.on .dropdown-label:before {
+  content: '▲';
+}
+.dropdown [type="checkbox"] {
+  position: relative;
+  top: -1px;
+  margin-right: 4px;
 }

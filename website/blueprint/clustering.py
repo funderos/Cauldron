@@ -27,7 +27,7 @@ def network(puuid):
     res = get_network(puuid, request.args)
     print(res)
     if not current_user.isRegistered:
-        req = {'timestamp': time.time(), 'route': '/network/' + puuid, 'method': 'POST', 'args': request.args, 'response': res}
+        req = {'timestamp': time.time(), 'route': '/network/' + puuid, 'method': 'GET', 'args': request.args}
         write_eval_request_log(current_user.username, req)
     return res
 
@@ -36,7 +36,7 @@ def network(puuid):
 def cluster():
     res = get_clustering(request.args)
     if not current_user.isRegistered:
-        req = {'timestamp': time.time(), 'route': '/cluster', 'method': 'POST', 'args': request.args, 'response': res}
+        req = {'timestamp': time.time(), 'route': '/cluster', 'method': 'GET', 'args': request.args}
         write_eval_request_log(current_user.username, req)
     return res
 
@@ -45,18 +45,18 @@ def cluster():
 def elbow():
     res = get_elbow(request.args)
     if not current_user.isRegistered:
-        req = {'timestamp': time.time(), 'route': '/elbow', 'method': 'POST', 'args': request.args, 'response': res}
+        req = {'timestamp': time.time(), 'route': '/elbow', 'method': 'GET', 'args': request.args}
         write_eval_request_log(current_user.username, req)
     return res
 
 @clustering.route('/stats', methods=['GET', 'POST'])
 @login_required
 def home():
+    if not current_user.isRegistered:
+            req = {'timestamp': time.time(), 'route': '/stats', 'method': request.method}
+            write_eval_request_log(current_user.username, req)
     if request.method == 'GET':
         res = get_statistics()
-        if not current_user.isRegistered:
-            req = {'timestamp': time.time(), 'route': '/stats', 'method': 'GET', 'response': res}
-            write_eval_request_log(current_user.username, req)
         return jsonify(res)
     else:
         response = make_response(get_csv(request.json))
@@ -68,7 +68,7 @@ def home():
 @login_required
 def finish_task():
     if not current_user.isRegistered:
-        req = {'timestamp': time.time(), 'route': '/finishtask', 'method': 'POST', 'args': request.json}
+        req = {'timestamp': time.time(), 'route': '/finishtask', 'method': 'POST', 'args': request.form}
         write_eval_request_log(current_user.username, req)
         increment_progress(current_user.username)
         return redirect(url_for('evaluation.tasks'))

@@ -161,5 +161,6 @@
     .navbar ul {
         padding: 10px;
         background-color: rgba(0, 0, 0, 0.1);
+        list-style-type: none;
     }
 }

@@ -206,12 +206,13 @@
   display: flex;
   margin: 10px;
   justify-content: flex-end;
-  align-items: center;
+  align-items: baseline;
 }
 
 .evalbar span{
   position: absolute;
   left: 10px;
+  padding-top: 5px;
 }
 
 .player-details {
@@ -375,4 +376,16 @@ code {
 .qclass {
   color: #dd0;
   font-weight: bold
+}
+
+.border-2 {
+  border: 2px solid;
+}
+
+.padding-7 {
+  padding: 7px;
+}
+
+.padding-4 {
+  padding: 4px;
 }

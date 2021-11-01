@@ -1,64 +1,15 @@
-{% extends "eval.html" %}
-{% block evalcontent %}
-<h1 class="likert-header">
-{{surveycontent.header}}
-</h1>
-  <form method="POST" action="/eval/survey">
-    {% for item in surveycontent['items'] %}
-    {% for type in item['type'] %}
-    {% if type == 'likert-custom' %}
-    <ul class='likert'>
-      <li>
-        <input type="radio" name="{{item.label1}}" value="1">
-        <label>{{item.label1}}</label>
-      </li>
-      <li>
-        <input type="radio" name="{{item.label1}}" value="2">
-      </li>
-      <li>
-        <input type="radio" name="{{item.label1}}" value="3">
-      </li>
-      <li>
-        <input type="radio" name="{{item.label1}}" value="4">
-      </li>
-      <li>
-        <input type="radio" name="{{item.label1}}" value="5">
-        <label>{{item.label2}}</label>
-      </li>
-    </ul>
-    {% endif %}
-    {% if type == 'likert' %}
-    <label class="statement">{{item.label}}</label>
-    <ul class='likert'>
-      <li>
-        <input type="radio" name="{{item.label}}" value="1">
-        <label>Strongly agree</label>
-      </li>
-      <li>
-        <input type="radio" name="{{item.label}}" value="2">
-        <label>Agree</label>
-      </li>
-      <li>
-        <input type="radio" name="{{item.label}}" value="3">
-        <label>Neutral</label>
-      </li>
-      <li>
-        <input type="radio" name="{{item.label}}" value="4">
-        <label>Disagree</label>
-      </li>
-      <li>
-        <input type="radio" name="{{item.label}}" value="5">
-        <label>Strongly disagree</label>
-      </li>
-    </ul>
-    {% endif %}
-    {% if type == 'textarea' or type == 'textfield'%}
-    <label class="statement">{{item.question}}</label>
-    <input type="text" name="{{item.question}}">
-    {% endif %}
-    {% endfor %}
-    {% endfor %}
-    <input type="submit" class="btn btn-primary" value="Next!"/>
+{% extends "eval.html" %} {% block options
+%}onload="setSurveyContent({{progress}})"{% endblock %} {% block evalcontent %}
+<div id="survey-header"></div>
+<form method="POST" action="/eval/survey">
+  <div id="survey-div"></div>
+  <table id="survey-table"></table>
+  <p>
+    <input
+      type="submit"
+      class="btn btn-primary"
+      value="Submit and {% if progress == 10 %}Finish{% else %}Continue{% endif %}"
+    />
+  </p>
 </form>
-</p>
 {% endblock %}

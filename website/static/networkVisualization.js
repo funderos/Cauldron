@@ -5,6 +5,7 @@ var network = null;
 
 function drawNetwork(playerid, firstTry = true) {
   openModal();
+  document.getElementById("network-loader").style.display = "flex";
   nodes = [];
   edges = [];
   activeParents = null;
@@ -55,10 +56,10 @@ function drawNetwork(playerid, firstTry = true) {
     error: function (data) {
       console.log(data);
       if (firstTry) {
-        drawNetwork(content, false);
+        drawNetwork(playerid, false);
       }
     },
-    timeout: 5000,
+    timeout: 20000,
   });
 }
 
@@ -88,6 +89,14 @@ function draw() {
     ),
     edges: edges,
   };
+
+  if (data.nodes.length > 200) {
+    if (!confirm("The graph contains more than 200 nodes and may impact browser performance. Do you want to continue?")) {
+      closeModal();
+      return;
+    }
+  }
+
   var options = {
     layout: {
       improvedLayout: false,
@@ -111,6 +120,12 @@ function draw() {
           !node.parents ||
           node.parents.some((parent) => activeParents.includes(parent))
       );
+      if (data.nodes.length > 200) {
+        if (!confirm("The resulting graph contains more than 200 nodes and may impact browser performance. Do you want to continue?")) {
+          that.toggleParent(params.nodes[0]);
+          return;
+        }
+      }
       let parentNode = data.nodes.find((pn) => pn["id"] == params.nodes[0]);
       parentNode["x"] = params.event.center.x;
       parentNode["y"] = params.event.center.y;

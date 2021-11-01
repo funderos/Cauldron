@@ -1,63 +1,90 @@
-{% extends "base.html" %}
-{% block title %}Cauldron | Clustering{% endblock %}
+{% extends "base.html" %} {% block title %}Cauldron | Clustering{% endblock %}
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/clustering.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dropdown.css') }}" />
-{% endblock %}
-{% block options %}onload="init({{progress}})"{% endblock %}
-
-{% block content %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/clustering.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/dropdown.css') }}"
+/>
+{% endblock %} {% block options %}onload="init({{progress}})"{% endblock %} {%
+block content %}
 <section class="visualizations">
   <!-- Tab links -->
   <div class="tab">
-    <button id="linkClustering" class="tablinks" onclick="openTab(event, 'clustering')">Cluster Data</button>
-    <button id="linkPlayer" class="tablinks" onclick="openTab(event, 'playerDetails')">Player Details</button>
-    <button id="linkStats" class="tablinks" onclick="openTab(event, 'statistics')">Statistics</button>
+    <button
+      id="linkClustering"
+      class="tablinks"
+      onclick="openTab(event, 'clustering')"
+    >
+      Cluster Data
+    </button>
+    <button
+      id="linkPlayer"
+      class="tablinks"
+      onclick="openTab(event, 'playerDetails')"
+    >
+      Player Details
+    </button>
+    <button
+      id="linkStats"
+      class="tablinks"
+      onclick="openTab(event, 'statistics')"
+    >
+      Statistics
+    </button>
   </div>
 
   <!-- Network Modal -->
   <div id="myModal" class="modal">
-
     <!-- Modal content -->
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <div id="network-loader" class="tabcontent-2">
-        <div class='loader'></div>
+        <div class="loader"></div>
       </div>
       <div id="network-content" class="tabcontent-2"></div>
     </div>
-
   </div>
 
-  <div id="landingtab" class="tabcontent">
-    Please click on a tab.
-  </div>
+  <div id="landingtab" class="tabcontent">Please click on a tab.</div>
   <!-- Tab content -->
   <div id="clustering" class="tabcontent">
     <div>
       <div class="clustering-details">
-         <div class="feature-layout">
-            <input type="button" class="btn btn-primary mx-1" value="Select All" onclick="selectAll(true)">
-            <input type="button" class="btn btn-primary mx-1" value="Deselect All" onclick="selectAll(false)">
-          </div>
+        <div class="feature-layout">
+          <input
+            type="button"
+            class="btn btn-primary mx-1"
+            value="Select All"
+            onclick="selectAll(true)"
+          />
+          <input
+            type="button"
+            class="btn btn-primary mx-1"
+            value="Deselect All"
+            onclick="selectAll(false)"
+          />
+        </div>
         <form id="clustering-features">
-            {% for category in statfields %}
-            {% if category != 'DEFAULT' and category != 'Player Details' %}
-            <p><b>{{category}} Selection:</b></p>
-            <div class="feature-layout">
-            {% for value, label in statfields[category].items() %}
-            {% set elementId = "check" + value %}
+          {% for category in statfields %} {% if category != 'DEFAULT' and
+          category != 'Player Details' %}
+          <p><b>{{category}} Selection:</b></p>
+          <div class="feature-layout">
+            {% for value, label in statfields[category].items() %} {% set
+            elementId = "check" + value %}
             <label class="checkbox">
-              <input type="checkbox" checked="checked" id="{{elementId}}">
+              <input type="checkbox" checked="checked" id="{{elementId}}" />
               {{label}}
             </label>
             {% endfor %}
-            </div>
-            {% endif %}
-            {% endfor %}
-            <p><b>Plot Type Selection:</b></p>
+          </div>
+          {% endif %} {% endfor %}
+          <p><b>Plot Type Selection:</b></p>
           <div class="feature-layout">
-            <label class="checkbox">Operation:
+            <label class="checkbox"
+              >Operation:
               <select id="clustertype" onchange="setFeatureFields()">
                 <option value="elbow" selected>Elbow</option>
                 <option value="kmeans">K-Means</option>
@@ -66,22 +93,40 @@
                 <option value="optics">OPTICS</option>
               </select>
             </label>
-            <label class="checkbox">Preprocessing:
+            <label class="checkbox"
+              >Preprocessing:
               <select id="preprocessing">
                 <option value="standard" selected>Standard Scaler</option>
                 <option value="minmax">MinMax Scaler</option>
                 <option value="none">None</option>
               </select>
             </label>
-            <label class="checkbox" id="kmk-label" style="display: none">K:
-            <input type="number" id="kmk" name="kmk" min="1" value="1"></label>
-            <label class="checkbox" id="dbe-label" style="display: none">ε:
-            <input type="number" id="dbe" name="dbe" min="0" value="3.1" step="0.1"></label>
-            <label class="checkbox" id="spn-label" style="display: none">n:
-            <input type="number" id="spn" name="spn" min="1" value="1"></label>
-            <label class="checkbox" id="ops-label" style="display: none">Min. Samples:
-            <input type="number" id="ops" name="ops" min="1" value="1"></label>
-            <label class="checkbox" id="dimreduce-label" style="display: none" selected>Dimensionality Reduction:
+            <label class="checkbox" id="kmk-label" style="display: none"
+              >K: <input type="number" id="kmk" name="kmk" min="1" value="1"
+            /></label>
+            <label class="checkbox" id="dbe-label" style="display: none"
+              >ε:
+              <input
+                type="number"
+                id="dbe"
+                name="dbe"
+                min="0"
+                value="3.1"
+                step="0.1"
+            /></label>
+            <label class="checkbox" id="spn-label" style="display: none"
+              >n: <input type="number" id="spn" name="spn" min="1" value="1"
+            /></label>
+            <label class="checkbox" id="ops-label" style="display: none"
+              >Min. Samples:
+              <input type="number" id="ops" name="ops" min="1" value="1"
+            /></label>
+            <label
+              class="checkbox"
+              id="dimreduce-label"
+              style="display: none"
+              selected
+              >Dimensionality Reduction:
               <select id="dimreduce">
                 <option value="pca">PCA</option>
                 <option value="tsne">TSNE</option>
@@ -89,134 +134,314 @@
             </label>
           </div>
           <div class="btn-layout-ctr">
-          <input type="button" class="btn btn-primary my-3" value="Draw Plot!" onclick="drawClusterPlot()">
+            <input
+              type="button"
+              class="btn btn-primary my-3"
+              value="Draw Plot!"
+              onclick="drawClusterPlot()"
+            />
           </div>
         </form>
       </div>
-      <div class="clustering-results" id="clustering-results">
-      </div>
-      <div class="btn-layout-ctr" id="post-cluster-buttons" style="display: none">
-        <input type="button" class="btn btn-primary my-1" value="Show Clusters per Feature" onclick="updateStats()">
-        <input type="button" class="btn btn-primary my-1" value="Download CSV" onclick="exportCsv()">
+      <div class="clustering-results" id="clustering-results"></div>
+      <div
+        class="btn-layout-ctr"
+        id="post-cluster-buttons"
+        style="display: none"
+      >
+        <input
+          type="button"
+          class="btn btn-primary my-1"
+          value="Show Clusters per Feature"
+          onclick="updateStats()"
+        />
+        <input
+          type="button"
+          class="btn btn-primary my-1"
+          value="Download CSV"
+          onclick="exportCsv()"
+        />
       </div>
     </div>
   </div>
 
   <div id="playerDetails" class="tabcontent">
     <form class="flex">
-      <select id="summonerid" class="txtfd">
-        <option value="" disabled selected>Select ID</option>
-        {% for id, matchcount in idcount|dictsort %}
-        <option value="{{id}}">{{id}} (Number of Matches: {{matchcount}})</option>
-        {% endfor %}
-      </select>
-      <input type="button" class="btn btn-primary" value="Show Player" onclick="showPlayer()">
+      <p>
+        <select id="summonerid" class="txtfd border-2 padding-7">
+          <option value="" disabled selected>Select ID</option>
+          {% for id, matchcount in idcount|dictsort %}
+          <option value="{{id}}">
+            {{id}} (Number of Matches: {{matchcount}})
+          </option>
+          {% endfor %}
+        </select>
+        <input
+          type="button"
+          class="btn btn-primary"
+          value="Show Player"
+          onclick="showPlayer()"
+        />
+      </p>
     </form>
     <form class="flex">
-      <label>
-        Visualization Mode
-        <select id="vismode" onchange="toggleConnectionField()" class="txtfd">
-          <option value="egonet" selected>1-Level</option>
-          <option value="extended">2-Level</option>
-        </select>
-      </label>
-      <label>
-        Connections
-        <select id="visconnection" class="txtfd">
-          <option value="all" selected>All</option>
-          <option value="team">Teammates</option>
-          <option value="vs">Opponents</option>
-        </select>
-      </label>
-      <label>
-        Hide Ego
-        <input type="checkbox" id="viscomponents">
-      </label>
+      <p>
+        <label>
+          Visualization Mode:
+          <select
+            id="vismode"
+            onchange="toggleConnectionField()"
+            class="txtfd border-2 padding-4"
+          >
+            <option value="egonet" selected>1-Level</option>
+            <option value="extended">2-Level</option>
+          </select>
+        </label>
+        <label>
+          &nbsp; Connections:
+          <select id="visconnection" class="txtfd border-2 padding-4">
+            <option value="all" selected>All</option>
+            <option value="team">Teammates</option>
+            <option value="vs">Opponents</option>
+          </select>
+        </label>
+        <label>
+          &nbsp; Hide Ego
+          <input type="checkbox" id="viscomponents" />
+        </label>
+      </p>
     </form>
     <div id="network-output">
       <table class="player-details">
         <tr id="detailremove">
-          <td rowspan=2>Operations</td>
+          <td rowspan="2">Operations</td>
           <td>Remove from Table</td>
         </tr>
         <tr id="detailshownetwork">
           <td>Show Graph</td>
         </tr>
-        {% for category in statfields %}
-        {% set ns = namespace(firstit = true) %}
-        {% for value, label in statfields[category].items() %}
-        {% set elementId = "detail" + value %}
-        {% set tooltipId = "tooltip" + value %}
+        {% for category in statfields %} {% set ns = namespace(firstit = true)
+        %} {% for value, label in statfields[category].items() %} {% set
+        elementId = "detail" + value %} {% set tooltipId = "tooltip" + value %}
         <tr id="{{elementId}}">
-          {% if ns.firstit %}
-          {% set ns.firstit = false %}
+          {% if ns.firstit %} {% set ns.firstit = false %}
           <td rowspan="{{statfields[category]|length}}">{{category}}</td>
           {% endif %}
-          <td>{{label}} <div class='qtip tip-top' id="{{tooltipId}}"><em class='fa fa-question-circle'/></div></td>
+          <td>
+            {{label}}
+            <div class="qtip tip-top" id="{{tooltipId}}">
+              <em class="fa fa-question-circle"></em>
+            </div>
+          </td>
         </tr>
-        {% endfor %}
-        {% endfor %}
+        {% endfor %} {% endfor %}
       </table>
     </div>
   </div>
 
   <div id="statistics" class="tabcontent stats">
-  <div id="statDescOverall" class="my-1" style="display:none">You are looking at the overall statistics. You can also view features per cluster after a clustering operation at "Cluster Data" tab.</div>
-  <div id="statDescCluster" class="my-1" style="display:none">You are looking at Cluster statistics. <input type="button" value="Show Overall Statistics!" onclick="loadStatistics()"></div>
-  <div id="statLoader" class="clustering-results" ><div class='loader'></div></div>
-  <div id="statPlots">
-    {% for category in statfields %}
-    {% if category != 'DEFAULT' and category != 'Player Details' %}
-    <button class="collapsible">{{category}}</button>
-    <div class="collapsible-content">
-      {% for value, label in statfields[category].items() %}
-      {% set elementId = "stat" + value %}
-      <div class="boxplot my-1" id="{{elementId}}Container">
-        <p><b>{{label}}</b></p>
-        <div id="{{elementId}}" name="{{label}}" class="cauldron-boxplot" style="width:600px;height:100px"></div>
+    <div id="statDescOverall" class="my-1" style="display: none">
+      You are looking at the overall statistics. You can also view features per
+      cluster after a clustering operation at "Cluster Data" tab.
+    </div>
+    <div id="statDescCluster" class="my-1" style="display: none">
+      You are looking at Cluster statistics.
+      <input
+        type="button"
+        value="Show Overall Statistics!"
+        onclick="loadStatistics()"
+      />
+    </div>
+    <div id="statLoader" class="clustering-results">
+      <div class="loader"></div>
+    </div>
+    <div id="statPlots">
+      {% for category in statfields %} {% if category != 'DEFAULT' and category
+      != 'Player Details' %}
+      <button class="collapsible">{{category}}</button>
+      <div class="collapsible-content">
+        {% for value, label in statfields[category].items() %} {% set elementId
+        = "stat" + value %}
+        <div class="boxplot my-1" id="{{elementId}}Container">
+          <p><b>{{label}}</b></p>
+          <div
+            id="{{elementId}}"
+            name="{{label}}"
+            class="cauldron-boxplot"
+            style="width: 600px; height: 100px"
+          ></div>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+      {% endif %} {% endfor %}
+      <div class="btn-layout-ctr">
+        <input
+          type="button"
+          class="btn btn-primary my-1"
+          value="Export all visible plots as PNG"
+          onclick="exportAllPlots()"
+        />
+      </div>
     </div>
-    {% endif %}
-    {% endfor %}
-    <div class="btn-layout-ctr">
-      <input type="button" class="btn btn-primary my-1" value="Export all visible plots as PNG" onclick="exportAllPlots()">
-    </div>
-  </div>
   </div>
 </section>
-{% endblock %}
-{% block evalbarcontent %}
-{% if progress > 0 %}
+{% endblock %} {% block evalbarcontent %} {% if progress > 0 %}
 <div class="evalbar">
-<span id="task-short"></span>
-      <form method="POST" action="/clustering/finishtask">
+  <span id="task-short"></span>
+  <div id="formcontainer">
+    <form method="POST" action="/clustering/finishtask">
       {% if progress == 2 %}
-      <input type="number" min="0" name="Age" placeholder="Age" class="txtfd"/>
-      <input type="text" name="IMI" placeholder="IMI" class="txtfd"/>
+      <input
+        type="number"
+        min="0"
+        name="t2.1"
+        placeholder="Age"
+        class="txtfd"
+        required
+      />
+      <input type="text" name="t2.2" placeholder="IDE" class="txtfd" required />
       {% elif progress == 3 %}
-      <input type="text" name="of" placeholder="Other feature" class="txtfd"/>
+      <input
+        type="number"
+        min="1"
+        name="t3"
+        placeholder="Match Count"
+        class="txtfd"
+        required
+      />
       {% elif progress == 4 %}
-      <input type="number" min="1" name="elbow-k" placeholder="K Value" class="txtfd"/>
-      {% elif progress == 5 or progress == 6 %}
-      <input type="text" name="important-features" placeholder="Important Features" class="txtfd"/>
-      <input type="text" name="best-clustering" placeholder="Best Clustering" class="txtfd"/>
-      {% endif %}
-        <input type="submit" value="Submit and continue!" class="btn btn-red" />
-      </form>
-</div>
-{% endif %}
-{% endblock %}
+      <textarea
+        name="t4"
+        placeholder="Specify findings from using the clustering feature"
+        class="txtarea"
+        required
+      ></textarea
+      ><br />
+      {% elif progress == 5 %}
+      <textarea
+        name="t5"
+        placeholder="Specify findings from using the network graph feature"
+        class="txtarea"
+        required
+      ></textarea
+      ><br />
+      {% elif progress == 6 %}
+      <div class="dropdown" data-control="checkbox-dropdown">
+        <label class="dropdown-label" value="Relevant Features"
+          >Relevant Features (Please select)</label
+        >
 
-{% block scripts %}
+        <div class="dropdown-list">
+          {% for category in statfields %} {% if category != 'DEFAULT' and
+          category != 'Player Details' %} {% for value, label in
+          statfields[category].items() %}
+          <label class="dropdown-option">
+            <input type="checkbox" name="t6.1" value="{{value}}" />
+            {{label}}
+          </label>
+          {% endfor %} {% endif %} {% endfor %}
+        </div>
+      </div>
+      <div class="dropdown" data-control="checkbox-dropdown">
+        <label class="dropdown-label" value="Irrelevant Features"
+          >Irrelevant Features (Please select)</label
+        >
+
+        <div class="dropdown-list">
+          {% for category in statfields %} {% if category != 'DEFAULT' and
+          category != 'Player Details' %} {% for value, label in
+          statfields[category].items() %}
+          <label class="dropdown-option">
+            <input type="checkbox" name="t6.2" value="{{value}}" />
+            {{label}}
+          </label>
+          {% endfor %} {% endif %} {% endfor %}
+        </div>
+      </div>
+      <div class="dropdown" data-control="checkbox-dropdown">
+        <label class="dropdown-label" value="Best Clustering"
+          >Best Clustering (Please select)</label
+        >
+        <div class="dropdown-list">
+          <label class="dropdown-option">
+            <input
+              type="checkbox"
+              name="t6.3"
+              value="kmeans"
+              singleSelect="true"
+              required
+            />
+            K-Means
+          </label>
+          <label class="dropdown-option">
+            <input
+              type="checkbox"
+              name="t6.3"
+              value="dbscan"
+              singleSelect="true"
+              required
+            />
+            DBSCAN
+          </label>
+          <label class="dropdown-option">
+            <input
+              type="checkbox"
+              name="t6.3"
+              value="spectral"
+              singleSelect="true"
+              required
+            />
+            Spectral
+          </label>
+          <label class="dropdown-option">
+            <input
+              type="checkbox"
+              name="t6.3"
+              value="optics"
+              singleSelect="true"
+              required
+            />
+            OPTICS
+          </label>
+        </div>
+      </div>
+      <br />
+      {% endif %}
+      <input
+        type="submit"
+        value="{% if progress != 1 %}Submit and {% endif %}Continue"
+        class="btn btn-red"
+      />
+    </form>
+  </div>
+</div>
+{% endif %} {% endblock %} {% block scripts %}
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='evalUtilities.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='networkUtilities.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='networkClustering.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='networkVisualization.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='networkPlots.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='networkPlayer.js') }}"></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='evalUtilities.js') }}"
+></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='networkUtilities.js') }}"
+></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='networkClustering.js') }}"
+></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='networkVisualization.js') }}"
+></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='networkPlots.js') }}"
+></script>
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='networkPlayer.js') }}"
+></script>
 {% endblock %}
