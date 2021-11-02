@@ -109,6 +109,22 @@
   cursor: pointer;
 }
 
+.legend {
+  position: absolute;
+  font-size: 14px;
+  top: 10px;
+  left: 10px;
+  border: 2px solid;
+  border-radius: 5px;
+  padding: 0 15px;
+  border-color: #aaa;
+  z-index: 1;
+}
+
+.legend-hidden {
+  display: none;
+}
+
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */

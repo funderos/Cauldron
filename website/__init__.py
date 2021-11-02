@@ -19,7 +19,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = SECRET_KEY
     #app.config["SESSION_PERMANENT"] = False
-    #app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=1)
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=60)
     app.config["REMEMBER_COOKIE_REFRESH_EACH_REQUEST"] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(here, DB_NAME)}'
     db.init_app(app)

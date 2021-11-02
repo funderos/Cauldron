@@ -113,6 +113,7 @@ function draw() {
   });
 
   if (activeParents) {
+    document.getElementById("legend-level-2").classList="";
     network.on("doubleClick", function (params) {
       that.toggleParent(params.nodes[0]);
       data.nodes = nodes.filter(
@@ -133,5 +134,7 @@ function draw() {
       network.redraw();
       loader.style.display = "flex";
     });
+  } else {
+    document.getElementById("legend-level-2").classList="legend-hidden";
   }
 }
