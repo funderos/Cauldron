@@ -25,7 +25,6 @@ def _clustering():
 def network(puuid):
     print(puuid)
     res = get_network(puuid, request.args)
-    print(res)
     if not current_user.isRegistered:
         req = {'timestamp': time.time(), 'route': '/network/' + puuid, 'method': 'GET', 'args': request.args}
         write_eval_request_log(current_user.username, req)
