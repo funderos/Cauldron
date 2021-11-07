@@ -1,3 +1,5 @@
+# Code partly taken/inspired from https://github.com/techwithtim/Flask-Web-App-Tutorial
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path

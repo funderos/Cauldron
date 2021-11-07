@@ -10,7 +10,7 @@ const taskDescriptionsLong = [
   When solving the following tasks, you will get to know the features provided while trying to find useful results of implicit and explicit nature.
   When you are done solving a task, fill out the task-specific fields and press the "Continue" button. These control inputs are limited to the tool evaluation and located in the red bar at the bottom of the page.`,
   `View the provided tools in the different tabs and feel free to play around. Try to understand what they are for and how they can be used.`,
-  `Try to find out the <i>Identified Regulation</i> (IDE) value as well as the age of the player with ID 1273.`,
+  `Try to find out the Identified Regulation (IDE) value as well as the age of the player with ID 1273.`,
   `One player has got an exceptional high mean tie strength. Find out how many matches this player participated in are included in the used dataset.`,
   `Can you find common connections, dependencies or correlations between the psychological data and the social network data of the players? Use the clustering features of the tool for solving this task.`,
   `View the network graph of the player with the ID 1149. Can you spot some features and derive information about that player’s play style or social connections based on the given numerical features?`,

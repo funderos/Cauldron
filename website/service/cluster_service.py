@@ -1,3 +1,5 @@
+# Code/ideas partly taken/inspired from https://towardsdatascience.com/visualising-high-dimensional-datasets-using-pca-and-t-sne-in-python-8ef87e7915b
+
 import pickle
 import configparser
 import json
@@ -68,7 +70,6 @@ def get_stat_field_tooltips(prefix=''):
     statFieldsRenamed = {}
     for category in categorizedStatFieldTooltips:
         statFieldsRenamed[category] = {prefix + categorizedStatFieldTooltips[category][key].replace(' ', '') : key for key in categorizedStatFieldTooltips[category]}
-    print(statFieldsRenamed)
     return statFieldsRenamed
 
 def get_statistics():
@@ -84,7 +85,6 @@ def get_statistics():
 def get_csv(labels):
     df = pandas.DataFrame(statistics)
     df['clusternumber'] = labels
-    print(df.head())
     return df.to_csv()
 
 def prepare_data(args):
@@ -96,7 +96,6 @@ def prepare_data(args):
                     cols_of_interest.append(label)
         df = pandas.DataFrame(statistics)[cols_of_interest]
         pandas.set_option('display.max_columns', None)
-        print(df.head())
         if (args['preprocess'] == 'standard'):
             df = StandardScaler().fit_transform(df)
         if (args['preprocess'] == 'minmax'):

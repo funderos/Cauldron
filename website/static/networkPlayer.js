@@ -9,22 +9,22 @@ let tooltips = {
   level: "In-game Summoner Level",
   matchcount: "Number of played matches included in the dataset",
 
-  // Psychological Features
-  mean_IMO: "Intrinsic Regulation (IMO)",
-  mean_INT: "Integrated Regulation (INT)",
-  mean_IDE: "Identified Regulation (IDE)",
-  mean_INJ: "Introjected Regulation (INJ)",
-  mean_EXT: "External Regulation (EXT)",
-  mean_AMO: "Non-regulation (AMO)",
-  mean_IMI_enj: "Interest-Enjoyment (IMI)",
-  mean_IMI_tens: "Pressure-Tension (IMI)",
-  mean_PENS_rel: "Player Experience Need Satisfaction (PENS): Relatedness",
-  mean_PENS_com: "Player Experience Need Satisfaction (PENS): Compentence",
-  mean_PENS_aut: "Player Experience Need Satisfaction (PENS): Autonomy",
-  mean_ACH_GOAL_perf_ap: "Achievement Goal: Performance Approach",
-  mean_ACH_GOAL_perf_av: "Achievement Goal: Performance Avoidance",
-  mean_ACH_GOAL_mast_ap: "Achievement Goal: Mastery Approach",
-  mean_ACH_GOAL_mast_av: "Achievement Goal: Mastery Avoidance",
+  // Psychological Features - descriptions partly taken from https://positivepsychology.com/self-determination-theory/ and https://www.sfu.ca/~jcnesbit/EDUC220/week7/week7.html
+  mean_IMO: "Internal motivation (Interest, Enjoyment, Inherent satisfaction)",
+  mean_INT: "Internal motivation (Congruence, Awareness, Synthesis with self)",
+  mean_IDE: "Somewhat internal motivation (Personal importance, conscious valuing)",
+  mean_INJ: "Somewhat external motivation (Self-control, Ego-involvement, Internal rewards and punishments)",
+  mean_EXT: "External motivation (Compliance, External rewards and punishments)",
+  mean_AMO: "Impersonal motivation (Nonintentional, Nonvaluing, Incompentence, Lack of control)",
+  mean_IMI_enj: "Interest and enjoyment felt",
+  mean_IMI_tens: "Pressure and tension felt",
+  mean_PENS_rel: "Need to have a close, affectionate relationship with others",
+  mean_PENS_com: "Need to be effective in dealing with environment",
+  mean_PENS_aut: "Need to control the course of their lives",
+  mean_ACH_GOAL_perf_ap: "Focus on the demonstration of competence relative to others",
+  mean_ACH_GOAL_perf_av: "Focus on avoiding failure in front of others",
+  mean_ACH_GOAL_mast_ap: "Focus on the development of competence for its own sake",
+  mean_ACH_GOAL_mast_av: "Focus on avoiding situations in which she/he is unable to learn",
   mean_PASSION_hp: "Harmonious Passion",
   mean_PASSION_op: "Obsessive Passion",
   PANAS_score_PA: "Positive Affect",
@@ -45,12 +45,15 @@ let tooltips = {
     "Ratio which is calculated by dividing the total sum won matches of a player by total matches the player participated in",
 
   // Network Features
-  ComponentRatio: "Component Ratio",
-  Density: "Density",
-  FragmentationIndex: "Fragmentation Index",
-  Degree: "Degree",
-  MeanTieStrength: "Mean Tie Strength",
-  Components: "Number of Components",
+  ComponentRatio: `By removing ego from the network, the network may split up from one component
+  (the initial network) to multiple components (smaller, non-connected networks). For considering the size
+  of the initial network, components are not just summed up but put in a relation to the number of alters.`,
+  Density: `The density is defined by the actual ties divided by the number of theoretically possible ties. It is defined by the number
+  of reachable nodes (multiple tie hops are are also considered) divided by the amount of possible alter-alter ties subtracted from 1.`,
+  FragmentationIndex: "Concepts of density and component ratio combined",
+  Degree: "Network size which is defined by the number of alters",
+  MeanTieStrength: "Mean over all tie strengths which is defined by the number of matches played together for each tie",
+  Components: "Number of Components when removing the ego from the network",
 };
 
 function setTooltipsforPlayerFeatures() {
