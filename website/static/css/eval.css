@@ -114,7 +114,7 @@ td, th {
 }
 
 .wide {
-  width: max-content;
+  width: auto;
 }
 
 .width-110 {
