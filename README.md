@@ -1,22 +1,34 @@
 # Cauldron
 
-## Setup & Installtion
+## Setup & Installation
 
 Make sure you have the latest version of Python installed.
 
-```bash
-git clone <repo-url>
+### Clone the repository
+```
+git clone https://github.com/funderos/Cauldron.git
 ```
 
-```bash
+### Add dependencies to your python environment
+```
 pip install -r requirements.txt
+```
+
+### Add datasets and a configuration file with according names/paths
+Copy `app/website/config_example.ini` to `app/website/config.ini` and adapt values
+
+### If you want to build a docker image, run:
+
+```
+docker build -t cauldron .
 ```
 
 ## Running The App
 
-```bash
-python main.py
-```
+- Run in debug/development mode: `python app/main.py`
+- Run on Server with WSG interface using `app/cauldron.wsgi` file
+- Run inside docker container
+  - Decide which configuration/data files will be inside image or mounted when running
 
 ## Viewing The App
 

@@ -2,7 +2,6 @@
 
 import pickle
 import configparser
-import json
 import os
 import io
 import pandas
@@ -11,11 +10,11 @@ from sklearn.cluster import KMeans, DBSCAN, SpectralClustering, OPTICS
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
 
 here = os.path.dirname(__file__)
 config = configparser.ConfigParser()
-config.read(os.path.join(here, '../config/config.ini'))
+config.read(os.path.join(here, '../config.ini'))
 
 ROOT_DIRPATH = config['DATA']['ROOT']
 DICT_FILEPATH = ROOT_DIRPATH + config['DATA']['DICT']
@@ -24,7 +23,7 @@ RESULT_FILEPATH_FILE = ROOT_DIRPATH + config['DATA']['RESULTFILE']
 
 statCats = configparser.ConfigParser()
 statCats.optionxform = str
-statCats.read(os.path.join(here, '../config/stats.ini'))
+statCats.read(os.path.join(here, '../constants/stats.ini'))
 categorizedStatFields = {}
 for category in statCats:
     categorizedStatFields[category] = {}
@@ -33,7 +32,7 @@ for category in statCats:
 
 statTooltips = configparser.ConfigParser()
 statTooltips.optionxform = str
-statTooltips.read(os.path.join(here, '../config/stats_tooltips.ini'))
+statTooltips.read(os.path.join(here, '../constants/stats_tooltips.ini'))
 categorizedStatFieldTooltips = {}
 for category in statTooltips:
     categorizedStatFieldTooltips[category] = {}
@@ -111,12 +110,13 @@ def get_elbow(args):
         km = KMeans(n_clusters=k)
         km.fit(df)
         sse.append(km.inertia_)
-    plt.figure()
-    plt.xlabel('K')
-    plt.ylabel('Sum of squared error')
+    fig = Figure()
+    plt = fig.subplots()
+    plt.set_xlabel('K')
+    plt.set_ylabel('Sum of squared error')
     plt.plot(k_rng, sse)
     sio = io.BytesIO()
-    plt.savefig(sio, format='svg')
+    fig.savefig(sio, format='svg')
     svg = sio.getvalue()
     return svg
 

@@ -4,11 +4,7 @@ import os
 
 here = os.path.dirname(__file__)
 config = configparser.ConfigParser()
-config.read(os.path.join(here, '../config/config.ini'))
-
-statCats = configparser.ConfigParser()
-statCats.optionxform = str
-statCats.read(os.path.join(here, 'stats.ini'))
+config.read(os.path.join(here, '../config.ini'))
 
 ROOT_DIRPATH = config['DATA']['ROOT']
 DICT_FILEPATH = ROOT_DIRPATH + config['DATA']['DICT']

@@ -6,7 +6,7 @@ import random
 
 here = os.path.dirname(__file__)
 config = configparser.ConfigParser()
-config.read(os.path.join(here, '../config/config.ini'))
+config.read(os.path.join(here, '../config.ini'))
 
 ROOT_DIRPATH = config['DATA']['ROOT']
 EVAL_DIRPATH = ROOT_DIRPATH + config['DATA']['EVALUATION']

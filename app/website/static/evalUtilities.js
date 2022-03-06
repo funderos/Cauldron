@@ -127,7 +127,7 @@ const knowledgeScale = [
   ["No knowledge", "Expert", "Social Network Analysis"],
   ["No knowledge", "Expert", "Player Communities in video games"],
   ["No knowledge", "Expert", "League Of Legends"]
-]
+];
 
 const openQuestions = [
   [
