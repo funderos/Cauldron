@@ -53,15 +53,15 @@ def logout():
 #     return render_template("eval/completed.html", user=current_user)
 
 
-# @auth.route('/init-users')
-# def init_users():
-#     config = configparser.ConfigParser()
-#     config.read(os.path.join(here, '../config.ini'))
-#     for username in config['ACCESS']:
-#         user = User.query.filter_by(username=username).first()
-#         if not user:
-#             new_user = User(username=username, isRegistered=True, password=generate_password_hash(
-#                 config['ACCESS'][username], method='sha256'))
-#             db.session.add(new_user)
-#             db.session.commit()
-#     return '<h1>Users created</h1>'
+@auth.route('/init-users')
+def init_users():
+    config = configparser.ConfigParser()
+    config.read(os.path.join(here, '../config.ini'))
+    for username in config['ACCESS']:
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            new_user = User(username=username, isRegistered=True, password=generate_password_hash(
+                config['ACCESS'][username], method='sha256'))
+            db.session.add(new_user)
+            db.session.commit()
+    return '<h1>Users created</h1>'
