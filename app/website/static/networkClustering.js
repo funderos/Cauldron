@@ -7,11 +7,16 @@ let resultPlot = document.getElementById("clustering-results");
 function setFeatureFields() {
   let chooser = document.getElementById("clustertype");
   let type = chooser.options[chooser.selectedIndex].value;
-  document.getElementById("dimreduce-label").style.display = type == "elbow" ? "none" : "block";
-  document.getElementById("kmk-label").style.display = type == "kmeans" ? "block" : "none";
-  document.getElementById("dbe-label").style.display = type == "dbscan" ? "block" : "none";
-  document.getElementById("spn-label").style.display = type == "spectral" ? "block" : "none";
-  document.getElementById("ops-label").style.display = type == "optics" ? "block" : "none";
+  document.getElementById("dimreduce-label").style.display =
+    type == "elbow" ? "none" : "block";
+  document.getElementById("kmk-label").style.display =
+    type == "kmeans" ? "block" : "none";
+  document.getElementById("dbe-label").style.display =
+    type == "dbscan" ? "block" : "none";
+  document.getElementById("spn-label").style.display =
+    type == "spectral" ? "block" : "none";
+  document.getElementById("ops-label").style.display =
+    type == "optics" ? "block" : "none";
 }
 
 function selectAll(selected) {
@@ -23,7 +28,7 @@ function selectAll(selected) {
 
 function drawClusterPlot() {
   document.getElementById("post-cluster-buttons").style.display = "none";
-  resultPlot.innerHTML = "<div class='loader'></div>"
+  resultPlot.innerHTML = "<div class='loader'></div>";
   let chooser = document.getElementById("clustertype");
   let type = chooser.options[chooser.selectedIndex].value;
 
@@ -39,7 +44,7 @@ function drawClusterPlot() {
       clusterParams.set(val.id, val.value);
     }
   }
-  
+
   if (type == "elbow") {
     elbowPlot(true);
   } else {
@@ -55,8 +60,11 @@ function scatterPlot(clusterType, firstTry) {
   chooser = document.getElementById("dimreduce");
   let dimreduce = "&dimreduce=" + chooser.options[chooser.selectedIndex].value;
   let clusterParamString = "";
-  clusterParams.forEach((value, key) => clusterParamString = clusterParamString + "&" + key + "=" + value);
- 
+  clusterParams.forEach(
+    (value, key) =>
+      (clusterParamString = clusterParamString + "&" + key + "=" + value)
+  );
+
   let queryString =
     "?labels=" +
     labels.join() +
@@ -71,7 +79,6 @@ function scatterPlot(clusterType, firstTry) {
       data = results;
       let traces = [];
       resultPlot.innerHTML = "";
-      //Plotly.purge("clustering-results");
 
       for (const label in data) {
         traces.push({
@@ -135,7 +142,23 @@ function elbowPlot(firstTry) {
   $.ajax({
     url: "elbow" + queryString,
     success: function (data) {
-      resultPlot.innerHTML = data.slice(data.indexOf("<svg"));
+      resultPlot.innerHTML = "";
+      let elbowData = {
+        x: data["x"],
+        y: data["y"],
+        type: "scatter",
+      };
+
+      var layout = {
+        xaxis: {
+          title: "K",
+        },
+        yaxis: {
+          title: "Sum of squared error",
+        },
+      };
+
+      Plotly.newPlot("clustering-results", [elbowData], layout);
     },
     error: function (data) {
       if (firstTry) {
@@ -156,7 +179,7 @@ function exportCsv() {
     type: "POST",
     url: "stats",
     data: JSON.stringify(data["labels"]),
-    contentType:"application/json; charset=utf-8",
+    contentType: "application/json; charset=utf-8",
     //dataType:"json",
     xhrFields: {
       responseType: "blob", // to avoid binary data being mangled on charset conversion

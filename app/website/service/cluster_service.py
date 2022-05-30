@@ -10,7 +10,6 @@ from sklearn.cluster import KMeans, DBSCAN, SpectralClustering, OPTICS
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from matplotlib.figure import Figure
 
 here = os.path.dirname(__file__)
 config = configparser.ConfigParser()
@@ -110,15 +109,7 @@ def get_elbow(args):
         km = KMeans(n_clusters=k)
         km.fit(df)
         sse.append(km.inertia_)
-    fig = Figure()
-    plt = fig.subplots()
-    plt.set_xlabel('K')
-    plt.set_ylabel('Sum of squared error')
-    plt.plot(k_rng, sse)
-    sio = io.BytesIO()
-    fig.savefig(sio, format='svg')
-    svg = sio.getvalue()
-    return svg
+    return { 'x':  list(k_rng), 'y': sse }
 
 def prepare_graph(method, n_components, data, model_labels):
     names = ['x', 'y', 'z']

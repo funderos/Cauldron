@@ -3,4 +3,3 @@ flask_sqlalchemy
 flask-login
 pandas
 sklearn
-matplotlib
