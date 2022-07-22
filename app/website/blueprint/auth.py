@@ -10,6 +10,9 @@ import uuid
 import os
 here = os.path.dirname(__file__)
 
+config = configparser.ConfigParser()
+config.read(os.path.join(here, '../config.ini'))
+
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['POST'])
@@ -28,16 +31,18 @@ def home():
         flash('Username does not exist.', category='error')
     return redirect(url_for('views.home'))
 
-# @auth.route('/starteval')
-# def start_eval():
-#     userId = str(uuid.uuid4())
-#     user = User(username=userId, isRegistered=False, password=generate_password_hash(str(uuid.uuid4()), method='sha256'))
-#     db.session.add(user)
-#     db.session.commit()
-#     flash('Evaluation started successfully!', category='success')
-#     login_user(user, remember=True)
-#     create_eval_file(userId)
-#     return render_template("eval/tasks.html", user=current_user, progress=0)
+@auth.route('/starteval')
+def start_eval():
+    if int(config['EVAL']['ENABLED']):
+        userId = str(uuid.uuid4())
+        user = User(username=userId, isRegistered=False, password=generate_password_hash(str(uuid.uuid4()), method='sha256'))
+        db.session.add(user)
+        db.session.commit()
+        flash('Evaluation started successfully!', category='success')
+        login_user(user, remember=True)
+        create_eval_file(userId)
+        return render_template("eval/tasks.html", user=current_user, progress=0)
+    return redirect(url_for('views.home'))
 
 
 @auth.route('/logout')
@@ -46,17 +51,16 @@ def logout():
     logout_user()
     return redirect(url_for('views.home'))
 
-# @auth.route('/finisheval')
-# @login_required
-# def finish_eval():
-#     logout_user()
-#     return render_template("eval/completed.html", user=current_user)
-
+@auth.route('/finisheval')
+@login_required
+def finish_eval():
+    if int(config['EVAL']['ENABLED']):
+        logout_user()
+        return render_template("eval/completed.html", user=current_user)
+    return redirect(url_for('views.home'))
 
 @auth.route('/init-users')
 def init_users():
-    config = configparser.ConfigParser()
-    config.read(os.path.join(here, '../config.ini'))
     for username in config['ACCESS']:
         user = User.query.filter_by(username=username).first()
         if not user:

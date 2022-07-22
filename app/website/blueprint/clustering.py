@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, make_response
 from flask_login import login_required, current_user
 from ..service.player_service import get_network, get_ego_ids, get_count_ids
-from ..service.cluster_service import get_clustering, get_elbow, get_categorized_stat_fields, get_statistics, get_csv, get_stat_field_tooltips
+from ..service.cluster_service import get_clustering, get_elbow, get_categorized_stat_fields, get_statistics, get_csv
 from ..service.eval_service import get_eval_progress, increment_progress, write_eval_request_log
-import json
 import time
 
 clustering = Blueprint('clustering', __name__)

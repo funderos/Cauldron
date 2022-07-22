@@ -48,10 +48,6 @@ with open(RESULT_FILEPATH_FILE, 'rb') as f:
 with open(ROOT_DIRPATH + "egomatchnumbers.pickle", 'rb') as f:
     matchnumbers = pickle.load(f)
 
-def get_ego_ids():
-    return matchnumbers
-
-
 def get_stat_fields(prefix=''):
     statFieldsRenamed = list(prefix + key.replace(' ', '') for key in statFields)
     #for field in statFields:
@@ -62,12 +58,6 @@ def get_categorized_stat_fields(prefix=''):
     statFieldsRenamed = {}
     for category in categorizedStatFields:
         statFieldsRenamed[category] = {prefix + categorizedStatFields[category][key].replace(' ', '') : key for key in categorizedStatFields[category]}
-    return statFieldsRenamed
-
-def get_stat_field_tooltips(prefix=''):
-    statFieldsRenamed = {}
-    for category in categorizedStatFieldTooltips:
-        statFieldsRenamed[category] = {prefix + categorizedStatFieldTooltips[category][key].replace(' ', '') : key for key in categorizedStatFieldTooltips[category]}
     return statFieldsRenamed
 
 def get_statistics():

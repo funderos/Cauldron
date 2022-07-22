@@ -45,8 +45,8 @@
             {% if user.is_authenticated %}
             <li><a href="/clustering">Clustering</a></li>
             <li><a href="/logout">Logout</a></li>
-            {% else %}
-            <!-- li><a href="/eval">Start Evaluation</a></li -->
+            {% elif eval %}
+            <li><a href="/eval">Start Evaluation</a></li>
             {% endif %}
           </ul>
         </nav>
@@ -95,8 +95,8 @@
             {% if user.is_authenticated %}
             <li><a href="/clustering">Clustering</a></li>
             <li><a href="/logout">Logout</a></li>
-            {% else %}
-            <!-- li><a href="/eval">Start Evaluation</a></li -->
+            {% elif eval %}
+            <li><a href="/eval">Start Evaluation</a></li>
             {% endif %}
           </ul>
         </nav>

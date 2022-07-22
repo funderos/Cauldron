@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
-from ..service.eval_service import get_eval_progress, increment_progress, get_survey_data, write_eval_request_log
+from ..service.eval_service import get_eval_progress, increment_progress, write_eval_request_log
 import json
 import uuid
 import time

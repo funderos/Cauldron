@@ -15,6 +15,7 @@ config.read(os.path.join(here, 'config.ini'))
 
 DB_NAME = config['FLASK']['DB_NAME']
 SECRET_KEY = config['FLASK']['SECRET_KEY']
+EVAL_ENABLED = config['EVAL']['ENABLED']
 
 def create_app():
     app = Flask(__name__)
@@ -28,12 +29,13 @@ def create_app():
     from .blueprint.views import views
     from .blueprint.auth import auth
     from .blueprint.clustering import clustering
-    #from .blueprint.evaluation import evaluation
+    from .blueprint.evaluation import evaluation
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(clustering, url_prefix='/clustering/')
-    #app.register_blueprint(evaluation, url_prefix='/eval/')
+    if int(EVAL_ENABLED):
+        app.register_blueprint(evaluation, url_prefix='/eval/')
 
     from .models import User
 
