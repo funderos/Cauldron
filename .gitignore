@@ -2,5 +2,6 @@
 **/__pycache__
 app/website/users.db
 app/website/config.ini
-Tasks
+tasks/*.ipynb
+tasks/task_config.ini
 Logs
