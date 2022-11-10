@@ -15,7 +15,7 @@ let tooltips = {
   mean_IDE: "Somewhat internal motivation (Personal importance, conscious valuing)",
   mean_INJ: "Somewhat external motivation (Self-control, Ego-involvement, Internal rewards and punishments)",
   mean_EXT: "External motivation (Compliance, External rewards and punishments)",
-  mean_AMO: "Impersonal motivation (Nonintentional, Nonvaluing, Incompentence, Lack of control)",
+  mean_AMO: "Impersonal motivation (Nonintentional, Nonvaluing, Incompetence, Lack of control)",
   mean_IMI_enj: "Interest and enjoyment felt",
   mean_IMI_tens: "Pressure and tension felt",
   mean_PENS_rel: "Need to have a close, affectionate relationship with others",
