@@ -114,6 +114,15 @@ knowledgeScale = [
     ['No \\mbox{knowledge}', 'Expert', 'League Of Legends']
 ]
 
+table_taskdescs = [
+  ['Task 1', 'View the provided tools in the different tabs and feel free to play around. Try to understand what they are for and how they can be used.', '-'],
+  ['Task 2', 'Try to find out the Identified Regulation (IDE) value as well as the age of the player with ID 1273.', 'Age: 19, IDE: 2'],
+  ['Task 3', 'One player has got an exceptional high mean tie strength. Find out how many matches this player participated in are included in the used dataset.', 'Match Count: 241'],
+  ['Task 4', 'Can you find common connections, dependencies or correlations between the psychological data and the social network data of the players? Use the clustering features of the tool for solving this task.', '-'],
+  ['Task 5', 'View the network graph of the player with the ID 1149. Can you spot some features and derive information about that player’s play style or social connections based on the given numerical features?', '-'],
+  ['Task 6', 'Which player features do you think are most important for clustering? Which can be easily omitted or may even distort a meaningful result? Which clustering method works best for you?', '-'],
+]
+
 request_keys = {
     1: [],
     2: ['t2.1', 't2.2'],
@@ -126,8 +135,6 @@ request_keys = {
     9: ['9.1', '9.1t', '9.2', '9.2t', '9.3', '9.3t', '9.4', '9.4t', '9.5', '9.5t'],
     10: ['10.1', '10.2', '10.3', '10.4', '10.5', '10.6', '10.7', '10.7t']
 }
-
-request_indices = ['Task Number', 'Method', 'Route', 'Time (seconds)', 'Query parameters']
 
 # Method for creating boxplots that represent numerical survey results in tables
 def create_boxplot(data, filename, scalemin=-1, scalemax=-1):
@@ -238,7 +245,7 @@ for evalfile in os.listdir(EVAL_RESULT_PATH):
             if evalf['progress'] > 10:
                 user_data = []
                 user_requests = []
-                last_timestamp = 0
+                last_timestamp = -1
                 for line, desc in evalf.items():
                     if line != 'progress':
                         result = desc['requests'][-1]
@@ -263,32 +270,33 @@ for evalfile in os.listdir(EVAL_RESULT_PATH):
                             user_data.append(str(request_time))
                             request_times[str(line)].append(request_time)
                             
-                            for req in desc['requests']:
-                                if req['route'] not in ['/', '/finishtask']:
-                                    user_requests.append([
-                                        'Task ' + str(line),
-                                        req['method'],
-                                        req['route'],
-                                        req['timestamp'] - last_timestamp,
-                                        req['args'].to_dict() if 'args' in req else '{}'
-                                        ])
-                                last_timestamp = req['timestamp']
+                        for req in desc['requests']:
+                            arguments = req['args'].to_dict(flat=False) if 'args' in req else {}
+                            user_requests.append([
+                                line,
+                                req['method'],
+                                req['route'],
+                                req['timestamp'] - last_timestamp if last_timestamp > 0 else '0',
+                                ' | '.join([key + ': ' + ','.join(values) for key, values in arguments.items()])
+                            ])
+                            last_timestamp = req['timestamp']
                 eval_data.append(user_data)
                 eval_requests.append(user_requests)
 
 # Create XLSX file containing a summary of all evaluation data
+table_individual_req_cols = ['Task Number', 'Method', 'Route', 'Delta Time (seconds)', 'GET Query Parameters/POST Body Attributes']
 with pd.ExcelWriter(EVAL_XLSX_FILE) as writer:
     df = pd.DataFrame(eval_data, columns=eval_indices)
-    df.to_excel(writer, sheet_name='Overview')
+    df.to_excel(writer, sheet_name='Overview', index=False)
     store_userid = 1
     for user_requests in eval_requests:
-        user_df = pd.DataFrame(user_requests, columns=request_indices)
-        user_df.to_excel(writer, sheet_name='Requests User ' + str(store_userid))
+        user_df = pd.DataFrame(user_requests, columns=table_individual_req_cols)
+        user_df.to_excel(writer, sheet_name='Requests User ' + str(store_userid), index=False)
         store_userid = store_userid + 1
 
 # Create LaTeX table for average task completion times
 table_request_stats_cols = [
-    'Task', 'Number of requests', '\\diameter\\hspace{1mm}Completion time']
+    'Task Number', 'Number of requests', '\\diameter\\hspace{1mm}Completion time']
 table_request_stats = []
 
 for key, value in request_numbers.items():
@@ -297,17 +305,14 @@ for key, value in request_numbers.items():
     table_request_stats.append(['Task ' + key, '\\tableboxplot{Plots/' + filename + '}', str(
         round(mean(request_times[key]), 2)) + ' seconds'])
 
-create_table_strings(table_request_stats_cols,
-                     table_request_stats, 'taskstats')
+create_table_strings(table_request_stats_cols, table_request_stats, 'taskstats')
 
 # Create LaTeX table for task solve rates
-table_solved_cols = ['Task Number', '\\% solved']
+table_solved_cols = ['Task Number', 'Requested attribute', '\\% solved']
 table_solved = [
-    ['Task 2.1', str(
-        100 * mean(1 if x == '19' else 0 for x in table_info['t2.1']))],
-    ['Task 2.2', str(
-        100 * mean(1 if x == '2' else 0 for x in table_info['t2.2']))],
-    ['Task 3', str(100 * mean(1 if x == '241' else 0 for x in table_info['t3']))]
+    ['Task 2.1', 'Age', str(100 * mean(1 if x == '19' else 0 for x in table_info['t2.1']))],
+    ['Task 2.2', 'IDE', str(100 * mean(1 if x == '2' else 0 for x in table_info['t2.2']))],
+    ['Task 3', 'Match Count', str(100 * mean(1 if x == '241' else 0 for x in table_info['t3']))]
 ]
 
 create_table_strings(table_solved_cols, table_solved, 'taskssolved')
@@ -413,3 +418,7 @@ for stmts in knowledgeScale:
     i = i + 1
 
 create_table_strings([], table_knowledge, 'knowledge')
+
+# Create LaTeX table for task descriptions and solutions
+table_taskdescs_cols = ['Task Number', 'Task Description', 'Expected Solution(s)']
+create_table_strings(table_taskdescs_cols, table_taskdescs, 'tasksdescs')
